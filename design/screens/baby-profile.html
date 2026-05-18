@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>아기 프로필 — 냠냠쿨쿨</title>
+<link rel="stylesheet" href="../css/tokens.css" />
+<link rel="stylesheet" href="../css/base.css" />
+<style>
+  .profile-hero {
+    text-align: center;
+    padding: var(--s-3) var(--s-4) var(--s-5);
+    background:
+      radial-gradient(70% 60% at 50% 0%, var(--brand-soft) 0%, transparent 70%),
+      var(--bg);
+  }
+  .profile-av {
+    width: 96px; height: 96px;
+    border-radius: 50%;
+    background:
+      radial-gradient(60% 60% at 30% 30%, oklch(85% 0.08 30), oklch(72% 0.13 30));
+    color: white;
+    display: grid; place-items: center;
+    font-family: var(--font-display);
+    font-size: 40px;
+    font-weight: 800;
+    margin: 0 auto var(--s-3);
+    box-shadow: var(--shadow-md);
+    position: relative;
+  }
+  .profile-av__edit {
+    position: absolute;
+    bottom: 0; right: 0;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 2px solid var(--bg);
+    color: var(--fg);
+    display: grid; place-items: center;
+    box-shadow: var(--shadow-sm);
+  }
+  .profile-name {
+    font-family: var(--font-display);
+    font-size: var(--fs-24);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+  }
+  .profile-sub { color: var(--muted); margin-top: 4px; font-size: var(--fs-13); }
+
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--s-2);
+    margin-top: var(--s-4);
+  }
+  .stat-grid > div {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: var(--s-3);
+    text-align: center;
+  }
+  .stat-grid .l { font-size: var(--fs-11); color: var(--muted); font-weight: 600; }
+  .stat-grid .v { font-size: var(--fs-17); font-weight: 800; font-variant-numeric: tabular-nums; margin-top: 4px; letter-spacing: -0.02em; }
+
+  .row-input {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    padding: var(--s-3) var(--s-4);
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    min-height: 56px;
+  }
+  .row-input:first-child { border-top-left-radius: var(--r-md); border-top-right-radius: var(--r-md); }
+  .row-input:last-child { border-bottom: 0; border-bottom-left-radius: var(--r-md); border-bottom-right-radius: var(--r-md); }
+  .row-input__l {
+    width: 96px;
+    flex: 0 0 96px;
+    font-size: var(--fs-13);
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .row-input__v {
+    flex: 1;
+    font-size: var(--fs-15);
+    font-weight: 600;
+    color: var(--fg);
+    text-align: right;
+  }
+  .row-input input {
+    flex: 1;
+    border: 0;
+    background: transparent;
+    text-align: right;
+    font-size: var(--fs-15);
+    font-weight: 600;
+    color: var(--fg);
+  }
+  .row-input input:focus { outline: none; }
+
+  .form-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    overflow: hidden;
+  }
+
+  .baby-switcher {
+    display: flex;
+    gap: var(--s-2);
+    overflow-x: auto;
+    padding: var(--s-2) 0;
+    scrollbar-width: none;
+  }
+  .baby-switcher::-webkit-scrollbar { display: none; }
+  .baby-switcher button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px 8px 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-pill);
+    flex: 0 0 auto;
+  }
+  .baby-switcher button.active {
+    border-color: var(--brand);
+    background: var(--brand-soft);
+  }
+  .baby-switcher .av {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: grid; place-items: center;
+    color: white;
+    font-weight: 800;
+    font-size: 12px;
+  }
+  .baby-switcher .name { font-size: var(--fs-13); font-weight: 700; }
+  .baby-switcher button.active .name { color: var(--brand); }
+
+  .gender-toggle {
+    display: flex;
+    gap: 6px;
+    background: var(--bg-elev);
+    border-radius: var(--r-pill);
+    padding: 3px;
+  }
+  .gender-toggle button {
+    padding: 6px 14px;
+    border-radius: var(--r-pill);
+    font-size: var(--fs-13);
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .gender-toggle button.active {
+    background: var(--surface);
+    color: var(--fg);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    padding: var(--s-3) var(--s-4);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    color: inherit;
+    text-decoration: none;
+  }
+  .nav-link__icon {
+    width: 36px; height: 36px;
+    border-radius: var(--r-md);
+    background: var(--tone-soft);
+    color: var(--tone);
+    display: grid; place-items: center;
+    flex: 0 0 auto;
+  }
+  .nav-link__body { flex: 1; }
+  .nav-link__t { font-size: var(--fs-15); font-weight: 600; }
+  .nav-link__s { font-size: var(--fs-12); color: var(--muted); margin-top: 2px; }
+</style>
+</head>
+<body data-active-tab="settings">
+
+<div class="app">
+  <header class="appbar">
+    <button class="appbar__back" data-back="home.html" aria-label="뒤로">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </button>
+    <div class="appbar__title">설정</div>
+    <button class="appbar__action" aria-label="다크모드 토글" onclick="NNK.toggleTheme()">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+  </header>
+
+  <main class="main" style="padding-top: 0;">
+
+    <section class="profile-hero">
+      <div class="profile-av">
+        하
+        <button class="profile-av__edit" aria-label="사진 변경">
+          <svg class="icon-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        </button>
+      </div>
+      <div class="profile-name">김하늘</div>
+      <div class="profile-sub">2026년 1월 7일 출생 · 여아 · 생후 142일</div>
+
+      <div class="baby-switcher">
+        <button class="active">
+          <span class="av" style="background: oklch(64% 0.17 30);">하</span>
+          <span class="name">하늘</span>
+        </button>
+        <button>
+          <span class="av" style="background: oklch(60% 0.13 265);">은</span>
+          <span class="name">은우</span>
+        </button>
+        <button style="border-style: dashed; color: var(--muted);">
+          <svg class="icon-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+          <span class="name">아기 추가</span>
+        </button>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title"><span>기본 정보</span><a class="link">편집</a></div>
+      <div class="form-card" style="margin-top: var(--s-2);">
+        <div class="row-input">
+          <div class="row-input__l">이름</div>
+          <input type="text" value="김하늘"/>
+        </div>
+        <div class="row-input">
+          <div class="row-input__l">애칭</div>
+          <input type="text" value="하늘이" placeholder="태명도 OK"/>
+        </div>
+        <div class="row-input">
+          <div class="row-input__l">생년월일</div>
+          <div class="row-input__v num">2026-01-07</div>
+        </div>
+        <div class="row-input">
+          <div class="row-input__l">성별</div>
+          <div class="gender-toggle">
+            <button class="active">여아</button>
+            <button>남아</button>
+            <button>미공개</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="stat-grid">
+        <div>
+          <div class="l">출생 체중</div>
+          <div class="v">3.21 <span style="font-size:12px; color:var(--muted);">kg</span></div>
+        </div>
+        <div>
+          <div class="l">출생 신장</div>
+          <div class="v">49.5 <span style="font-size:12px; color:var(--muted);">cm</span></div>
+        </div>
+        <div>
+          <div class="l">출생 주수</div>
+          <div class="v">39+4</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title"><span>알러지 · 특이사항</span></div>
+      <div class="form-card" style="margin-top: var(--s-2);">
+        <div class="row-input">
+          <div class="row-input__l">알러지</div>
+          <input type="text" value="우유 단백질" placeholder="없음"/>
+        </div>
+        <div class="row-input">
+          <div class="row-input__l">특이사항</div>
+          <input type="text" value="땀띠 잦음" placeholder="추가"/>
+        </div>
+        <div class="row-input">
+          <div class="row-input__l">소아과</div>
+          <input type="text" value="다정 소아청소년과" placeholder="단골 병원"/>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title"><span>연결된 기능</span></div>
+      <div class="col" style="margin-top: var(--s-2);">
+        <a class="nav-link tone-tip" href="growth.html">
+          <span class="nav-link__icon">
+            <svg class="icon-20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>
+          </span>
+          <div class="nav-link__body">
+            <div class="nav-link__t">성장 기록 · 예방접종</div>
+            <div class="nav-link__s">WHO 곡선 · 다음 접종 5월 22일</div>
+          </div>
+          <svg class="icon-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--muted);"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+        <a class="nav-link tone-photo" href="family-invite.html">
+          <span class="nav-link__icon">
+            <svg class="icon-20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </span>
+          <div class="nav-link__body">
+            <div class="nav-link__t">가족 · 권한 관리</div>
+            <div class="nav-link__s">4명 · 본인 관리자</div>
+          </div>
+          <svg class="icon-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--muted);"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+        <a class="nav-link tone-cry" href="ai-provider.html">
+          <span class="nav-link__icon">
+            <svg class="icon-20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M2 12h20M12 2a15 15 0 0 1 4 10 15 15 0 0 1-4 10M12 2a15 15 0 0 0-4 10 15 15 0 0 0 4 10"/></svg>
+          </span>
+          <div class="nav-link__body">
+            <div class="nav-link__t">AI 프로바이더</div>
+            <div class="nav-link__s">Gemini 2.5 Flash · 운영사 키 사용 중</div>
+          </div>
+          <svg class="icon-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--muted);"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+        <a class="nav-link tone-feed" href="log-voice.html">
+          <span class="nav-link__icon">
+            <svg class="icon-20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+          </span>
+          <div class="nav-link__body">
+            <div class="nav-link__t">음성비서 · 알림</div>
+            <div class="nav-link__s">Siri 연결됨 · 측정 알림 켜짐</div>
+          </div>
+          <svg class="icon-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--muted);"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title"><span>접근성 · 화면</span></div>
+      <div class="form-card" style="margin-top: var(--s-2);">
+        <div class="row-input">
+          <div class="row-input__l">다크모드</div>
+          <div style="display:flex; align-items:center; gap: var(--s-3);">
+            <span class="muted tiny">시스템 따라감</span>
+            <label class="toggle"><input type="checkbox"/><span class="toggle__track"></span></label>
+          </div>
+        </div>
+        <div class="row-input">
+          <div class="row-input__l">큰 글자</div>
+          <div style="display:flex; align-items:center; gap: var(--s-3);">
+            <span class="muted tiny">조부모 모드</span>
+            <label class="toggle"><input type="checkbox" checked/><span class="toggle__track"></span></label>
+          </div>
+        </div>
+        <div class="row-input">
+          <div class="row-input__l">한 손 조작</div>
+          <div style="display:flex; align-items:center; gap: var(--s-3);">
+            <span class="muted tiny">하단 우선 배치</span>
+            <label class="toggle"><input type="checkbox" checked/><span class="toggle__track"></span></label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <nav class="tabbar">
+    <a class="tabbar__item" data-tab="home" href="home.html"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-9 9 9M5 10v10h14V10"/></svg>홈</a>
+    <a class="tabbar__item" data-tab="log" href="log-timeline.html"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>일지</a>
+    <a class="tabbar__item tabbar__item--cry" data-tab="cry" href="cry-record.html"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>울음</a>
+    <a class="tabbar__item" data-tab="gallery" href="gallery-calendar.html"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg>갤러리</a>
+    <a class="tabbar__item" data-tab="settings" href="baby-profile.html"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 9 19.4a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.55-1H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H9a1.7 1.7 0 0 0 1-1.55V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87V9a1.7 1.7 0 0 0 1.55 1H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.55 1z"/></svg>설정</a>
+  </nav>
+</div>
+
+<script src="../js/shared.js"></script>
+<script>
+  document.querySelectorAll('.baby-switcher button').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.baby-switcher button').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+    });
+  });
+  document.querySelectorAll('.gender-toggle button').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.gender-toggle button').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

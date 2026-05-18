@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>홈 — 냠냠쿨쿨</title>
+<link rel="stylesheet" href="../css/tokens.css" />
+<link rel="stylesheet" href="../css/base.css" />
+<style>
+  .home-head {
+    padding: calc(var(--safe-top) + var(--s-4)) var(--s-4) var(--s-3);
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+  }
+  .home-head__greet { flex: 1; min-width: 0; }
+  .home-head__name { font-size: var(--fs-13); color: var(--muted); font-weight: 600; }
+  .home-head__title {
+    font-family: var(--font-display);
+    font-size: var(--fs-22);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+  }
+  .baby-pick {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-pill);
+    padding: 4px 12px 4px 4px;
+    cursor: pointer;
+  }
+  .baby-pick__av {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--brand);
+    color: var(--brand-fg);
+    display: grid; place-items: center;
+    font-size: 13px;
+    font-weight: 800;
+  }
+  .baby-pick__name { font-size: var(--fs-13); font-weight: 700; }
+  .baby-pick svg { color: var(--muted); }
+
+  .tip-card {
+    margin: 0 var(--s-4);
+    padding: var(--s-4);
+    border-radius: var(--r-xl);
+    background:
+      radial-gradient(120% 70% at 100% 0%, var(--c-tip) 0%, transparent 50%),
+      var(--c-tip);
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+  .tip-card::after {
+    content: '';
+    position: absolute;
+    bottom: -20px; right: -20px;
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    background: oklch(100% 0 0 / 0.08);
+  }
+  .tip-card__top {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--fs-11);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    opacity: 0.9;
+  }
+  .tip-card__title {
+    font-family: var(--font-display);
+    font-size: var(--fs-20);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+    margin-top: var(--s-2);
+    text-wrap: balance;
+  }
+  .tip-card__body {
+    font-size: var(--fs-13);
+    opacity: 0.92;
+    margin-top: 6px;
+    line-height: 1.5;
+    max-width: 36ch;
+  }
+  .tip-card__actions {
+    display: flex;
+    gap: var(--s-2);
+    margin-top: var(--s-3);
+    position: relative;
+    z-index: 2;
+  }
+  .tip-card__actions button {
+    padding: 8px 14px;
+    border-radius: var(--r-pill);
+    background: oklch(100% 0 0 / 0.20);
+    color: white;
+    font-size: var(--fs-12);
+    font-weight: 700;
+    backdrop-filter: blur(8px);
+  }
+  .tip-card__actions button.primary {
+    background: white;
+    color: var(--c-tip);
+  }
+
+  .status-card {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--s-2);
+  }
+
+  .last-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--s-2);
+  }
+  .last-tile {
+    padding: var(--s-3);
+    border-radius: var(--r-md);
+    background: var(--tone-soft);
+  }
+  .last-tile__hd {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: var(--fs-11);
+    color: var(--tone);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .last-tile__hd .ic { color: var(--tone); }
+  .last-tile__v {
+    font-size: var(--fs-17);
+    font-weight: 800;
+    color: var(--fg-strong);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+    margin-top: 4px;
+  }
+  .last-tile__s {
+    font-size: var(--fs-11);
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .last-tile__chip {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: var(--r-pill);
+    background: var(--surface);
+    color: var(--tone);
+  }
+
+  .predict-card {
+    display: flex;
+    gap: var(--s-3);
+    align-items: center;
+    padding: var(--s-3) var(--s-4);
+    background: var(--c-feed-soft);
+    border-radius: var(--r-lg);
+  }
+  .predict-clock {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: var(--c-feed);
+    color: white;
+    display: grid; place-items: center;
+    flex: 0 0 auto;
+    font-family: var(--font-num);
+    font-size: var(--fs-15);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    text-align: center;
+  }
+  .predict-card .lbl { font-size: var(--fs-11); color: var(--c-feed); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+  .predict-card .t { font-size: var(--fs-15); font-weight: 700; margin-top: 2px; }
+  .predict-card .s { font-size: var(--fs-12); color: var(--muted); margin-top: 2px; }
+
+  /* gallery thumb strip */
+  .gallery-strip {
+    display: flex;
+    gap: var(--s-2);
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+    margin: var(--s-2) calc(-1 * var(--s-4)) 0;
+    padding-left: var(--s-4);
+    padding-right: var(--s-4);
+    scroll-snap-type: x mandatory;
+  }
+  .gallery-strip::-webkit-scrollbar { display: none; }
+  .photo-tile {
+    flex: 0 0 92px;
+    aspect-ratio: 1 / 1.2;
+    border-radius: 12px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    overflow: hidden;
+    scroll-snap-align: start;
+    color: white;
+    text-decoration: none;
+  }
+  .photo-tile::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, transparent 30%, oklch(0% 0 0 / 0.55) 100%);
+  }
+  .photo-tile__dol {
+    position: absolute;
+    top: 6px; left: 6px;
+    z-index: 1;
+    font-size: 10px;
+    font-weight: 800;
+    background: oklch(0% 0 0 / 0.40);
+    color: white;
+    padding: 2px 6px;
+    border-radius: var(--r-pill);
+    backdrop-filter: blur(4px);
+    font-variant-numeric: tabular-nums;
+  }
+  .photo-tile__milestone {
+    position: absolute;
+    top: 6px; right: 6px;
+    z-index: 1;
+    font-size: 12px;
+  }
+  .photo-tile__date {
+    position: absolute;
+    bottom: 6px; left: 6px;
+    z-index: 1;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .photo-tile.add {
+    background: var(--bg-elev);
+    border: 1.5px dashed var(--border);
+    display: grid; place-items: center;
+    color: var(--muted);
+  }
+  .photo-tile.add::after { display: none; }
+  .photo-tile.add .add__t { font-size: 10px; font-weight: 700; margin-top: 4px; }
+  .ph-1 { background-image: linear-gradient(135deg, oklch(70% 0.15 30), oklch(60% 0.16 320)); }
+  .ph-2 { background-image: linear-gradient(135deg, oklch(64% 0.14 295), oklch(60% 0.13 265)); }
+  .ph-3 { background-image: linear-gradient(135deg, oklch(70% 0.14 60), oklch(60% 0.12 155)); }
+  .ph-4 { background-image: linear-gradient(135deg, oklch(68% 0.13 240), oklch(72% 0.12 200)); }
+  .ph-5 { background-image: linear-gradient(135deg, oklch(72% 0.14 90), oklch(74% 0.13 50)); }
+
+  /* milestone summary card */
+  .milestone-card {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    padding: var(--s-3) var(--s-4);
+    background: var(--c-photo-soft);
+    border-radius: var(--r-lg);
+    color: var(--fg-strong);
+    text-decoration: none;
+  }
+  .milestone-card__badge {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    background: var(--c-photo);
+    color: white;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    flex: 0 0 auto;
+    line-height: 1;
+  }
+  .milestone-card__badge .num {
+    font-family: var(--font-num);
+    font-size: var(--fs-15);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .milestone-card__badge .lbl { font-size: 9px; opacity: 0.85; margin-top: 1px; }
+  .milestone-card__t { font-size: var(--fs-14); font-weight: 800; letter-spacing: -0.01em; }
+  .milestone-card__s { font-size: var(--fs-12); color: var(--muted); margin-top: 2px; }
+  .milestone-card svg.arrow { color: var(--c-photo); }
+
+  /* recent activity */
+  .activity .recent-item {
+    display: flex;
+    gap: var(--s-3);
+    padding: var(--s-3) 0;
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+  }
+  .activity .recent-item:last-child { border-bottom: 0; }
+  .activity .recent-item .icon-box {
+    width: 32px; height: 32px;
+    border-radius: var(--r-md);
+    background: var(--tone-soft);
+    color: var(--tone);
+    display: grid; place-items: center;
+    flex: 0 0 auto;
+  }
+  .activity .ri-body { flex: 1; min-width: 0; }
+  .activity .ri-title { font-size: var(--fs-14); font-weight: 600; }
+  .activity .ri-sub { font-size: var(--fs-11); color: var(--muted); margin-top: 2px; }
+  .activity .ri-time { font-size: var(--fs-12); color: var(--muted); font-variant-numeric: tabular-nums; }
+
+  .home-bg-tint {
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 320px;
+    background:
+      radial-gradient(80% 50% at 50% 0%, var(--brand-soft) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .main { position: relative; z-index: 1; }
+</style>
+</head>
+<body data-active-tab="home">
+
+<div class="app">
+  <div class="home-bg-tint"></div>
+
+  <header class="home-head">
+    <button class="baby-pick" aria-label="아기 선택">
+      <span class="baby-pick__av">하</span>
+      <span class="baby-pick__name">하늘</span>
+      <svg class="icon-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <div class="home-head__greet">
+      <div class="home-head__name">5월 18일 일요일 · 생후 142일</div>
+      <div class="home-head__title">안녕하세요, 지영님</div>
+    </div>
+    <button class="appbar__action" onclick="location.href='family-invite.html'" aria-label="가족 관리">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    </button>
+  </header>
+
+  <main class="main" style="padding-top: 0;">
+
+    <section class="tip-card">
+      <div class="tip-card__top">
+        <svg class="icon-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12c.7.6 1 1.5 1 2.5V18h6v-1.5c0-1 .3-1.9 1-2.5A7 7 0 0 0 12 2z"/></svg>
+        오늘의 팁
+      </div>
+      <h2 class="tip-card__title">저녁 수유를 30분 앞당겨보는 건 어때요?</h2>
+      <p class="tip-card__body">최근 5일 중 4일이 18시 직전에 배고픔 울음으로 시작됐어요. 30분 앞당기면 저녁 루틴이 더 안정될 수 있어요.</p>
+      <div class="tip-card__actions">
+        <button class="primary">근거 보기</button>
+        <button>유용했어요</button>
+        <button>나중에</button>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title">
+        <span>지금 상태</span>
+        <a class="link" href="log-timeline.html">전체 일지</a>
+      </div>
+      <div class="last-row" style="margin-top: var(--s-2);">
+        <div class="last-tile tone-feed">
+          <div class="last-tile__hd">
+            <span>수유</span>
+            <span class="last-tile__chip">2h 35m</span>
+          </div>
+          <div class="last-tile__v">14:23</div>
+          <div class="last-tile__s">분유 120ml</div>
+        </div>
+        <div class="last-tile tone-sleep">
+          <div class="last-tile__hd">
+            <span>수면</span>
+            <span class="last-tile__chip">25m</span>
+          </div>
+          <div class="last-tile__v">1h 30m</div>
+          <div class="last-tile__s">낮잠 (12:35 깸)</div>
+        </div>
+        <div class="last-tile tone-diaper">
+          <div class="last-tile__hd">
+            <span>배변</span>
+            <span class="last-tile__chip">3h 5m</span>
+          </div>
+          <div class="last-tile__v">소변</div>
+          <div class="last-tile__s">발진 없음</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="predict-card">
+      <div class="predict-clock">15:50</div>
+      <div class="grow">
+        <div class="lbl">다음 수유 예상</div>
+        <div class="t">약 1시간 27분 후</div>
+        <div class="s">최근 5회 평균 간격 기준</div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title">
+        <span>오늘의 갤러리</span>
+        <a class="link" href="gallery-calendar.html">달력 전체</a>
+      </div>
+      <div class="gallery-strip" style="margin-top: var(--s-2);">
+        <a class="photo-tile ph-1" href="gallery-day.html" aria-label="D+142 오늘 3장">
+          <span class="photo-tile__dol">D+142</span>
+          <span class="photo-tile__date">5월 18일<br/>오늘 · 3장</span>
+        </a>
+        <a class="photo-tile ph-2" href="gallery-day.html" aria-label="D+141 14장">
+          <span class="photo-tile__dol">D+141</span>
+          <span class="photo-tile__date">외할머니<br/>첫 인사</span>
+        </a>
+        <a class="photo-tile ph-3" href="gallery-day.html" aria-label="D+131 첫 뒤집기 마일스톤">
+          <span class="photo-tile__dol">D+131</span>
+          <span class="photo-tile__milestone">🌟</span>
+          <span class="photo-tile__date">첫 뒤집기</span>
+        </a>
+        <a class="photo-tile ph-4" href="gallery-day.html" aria-label="D+127 6장">
+          <span class="photo-tile__dol">D+127</span>
+          <span class="photo-tile__date">5월 3일<br/>주말 산책</span>
+        </a>
+        <a class="photo-tile ph-5" href="gallery-day.html" aria-label="D+120 첫 옹알이">
+          <span class="photo-tile__dol">D+120</span>
+          <span class="photo-tile__milestone">✨</span>
+          <span class="photo-tile__date">첫 옹알이</span>
+        </a>
+        <a class="photo-tile add" href="gallery-calendar.html" aria-label="사진 추가">
+          <svg class="icon-20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+          <span class="add__t">사진</span>
+        </a>
+      </div>
+    </section>
+
+    <a class="milestone-card" href="gallery-day.html">
+      <div class="milestone-card__badge">
+        <span class="num">D+131</span>
+        <span class="lbl">마일스톤</span>
+      </div>
+      <div class="grow">
+        <div class="milestone-card__t">첫 뒤집기 — 11일 전</div>
+        <div class="milestone-card__s">권장 다음: 첫 옹알이 · 보통 D+120~150</div>
+      </div>
+      <svg class="icon arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+    </a>
+
+    <section class="card activity">
+      <div class="section-title" style="margin: 0;"><span>최근 활동</span><a class="link" href="log-timeline.html">전체</a></div>
+      <div style="margin-top: var(--s-2);">
+        <div class="recent-item tone-feed">
+          <div class="icon-box">
+            <svg class="icon-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v6c0 2 1 4 4 4s4-2 4-4V2"/><path d="M12 12v10"/></svg>
+          </div>
+          <div class="ri-body">
+            <div class="ri-title">분유 120ml</div>
+            <div class="ri-sub">민수 아빠가 기록</div>
+          </div>
+          <div class="ri-time">14:23</div>
+        </div>
+        <div class="recent-item tone-cry">
+          <div class="icon-box">
+            <svg class="icon-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+          </div>
+          <div class="ri-body">
+            <div class="ri-title">울음 분석 · 배고픔 78%</div>
+            <div class="ri-sub">→ 수유 권장</div>
+          </div>
+          <div class="ri-time">14:20</div>
+        </div>
+        <div class="recent-item tone-sleep">
+          <div class="icon-box">
+            <svg class="icon-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </div>
+          <div class="ri-body">
+            <div class="ri-title">낮잠 1시간 30분</div>
+            <div class="ri-sub">12:35 → 14:05</div>
+          </div>
+          <div class="ri-time">14:05</div>
+        </div>
+        <div class="recent-item tone-photo">
+          <div class="icon-box">
+            <svg class="icon-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 16l5-5 4 4 5-5 4 4"/><circle cx="9" cy="9" r="1.5"/></svg>
+          </div>
+          <div class="ri-body">
+            <div class="ri-title">사진 3장 · D+142 폴더로 자동 배치</div>
+            <div class="ri-sub">EXIF 기준 · 외할머니 함께 · 중복 1장 제외</div>
+          </div>
+          <div class="ri-time">13:40</div>
+        </div>
+        <div class="recent-item tone-photo">
+          <div class="icon-box">
+            <svg class="icon-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 5 5.6.8-4 3.9.9 5.5-4.9-2.6-4.9 2.6.9-5.5-4-3.9 5.6-.8z"/></svg>
+          </div>
+          <div class="ri-body">
+            <div class="ri-title">마일스톤 · 첫 뒤집기 (D+131)</div>
+            <div class="ri-sub">민수 엄마가 기록 · 11일 전 · 다음: 첫 옹알이</div>
+          </div>
+          <div class="ri-time">D+131</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <a class="fab" href="log-add.html" aria-label="새 기록">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+  </a>
+
+  <nav class="tabbar">
+    <a class="tabbar__item" data-tab="home" href="home.html"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-9 9 9M5 10v10h14V10"/></svg>홈</a>
+    <a class="tabbar__item" data-tab="log" href="log-timeline.html"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>일지</a>
+    <a class="tabbar__item tabbar__item--cry" data-tab="cry" href="cry-record.html"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>울음</a>
+    <a class="tabbar__item" data-tab="gallery" href="gallery-calendar.html"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg>갤러리</a>
+    <a class="tabbar__item" data-tab="settings" href="baby-profile.html"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 9 19.4a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.55-1H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H9a1.7 1.7 0 0 0 1-1.55V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87V9a1.7 1.7 0 0 0 1.55 1H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.55 1z"/></svg>설정</a>
+  </nav>
+</div>
+
+<script src="../js/shared.js"></script>
+</body>
+</html>

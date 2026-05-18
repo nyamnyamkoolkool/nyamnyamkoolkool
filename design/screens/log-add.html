@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>빠른 기록 — 냠냠쿨쿨</title>
+<link rel="stylesheet" href="../css/tokens.css" />
+<link rel="stylesheet" href="../css/base.css" />
+<style>
+  .cat-tabs {
+    display: flex;
+    background: var(--bg-elev);
+    border-radius: var(--r-md);
+    padding: 4px;
+    gap: 2px;
+  }
+  .cat-tabs button {
+    flex: 1;
+    padding: 12px 8px;
+    border-radius: calc(var(--r-md) - 2px);
+    font-size: var(--fs-14);
+    font-weight: 600;
+    color: var(--muted);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all var(--transition);
+  }
+  .cat-tabs button .icon-16 { transition: color var(--transition); }
+  .cat-tabs button.active {
+    background: var(--surface);
+    color: var(--tone, var(--fg));
+    box-shadow: var(--shadow-sm);
+  }
+
+  .quick-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--s-2);
+  }
+  .quick-row button {
+    padding: 12px;
+    border-radius: var(--r-md);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    font-size: var(--fs-14);
+    font-weight: 600;
+    color: var(--fg);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    transition: all var(--transition);
+  }
+  .quick-row button:hover { border-color: var(--brand); }
+  .quick-row button.selected {
+    background: var(--tone-soft);
+    border-color: var(--tone);
+    color: var(--tone);
+  }
+  .quick-row button .small { font-size: var(--fs-11); color: var(--muted); font-weight: 500; }
+  .quick-row button.selected .small { color: var(--tone); opacity: 0.85; }
+
+  /* 모유 split cell — 한 셀에 좌/우 세그먼트가 들어감 */
+  .feed-split {
+    grid-column: span 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 8px 8px 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: all var(--transition);
+  }
+  .feed-split:hover { border-color: var(--brand); }
+  .feed-split.has-selection {
+    background: var(--tone-soft);
+    border-color: var(--tone);
+  }
+  .feed-split__label {
+    font-size: var(--fs-13);
+    font-weight: 700;
+    color: var(--fg);
+    text-align: center;
+    line-height: 1.2;
+  }
+  .feed-split.has-selection .feed-split__label { color: var(--tone); }
+  .feed-split__seg {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+  }
+  .feed-split__seg button {
+    padding: 8px 4px;
+    border: 0;
+    border-radius: calc(var(--r-md) - 4px);
+    background: var(--bg-elev);
+    color: var(--muted);
+    font-size: var(--fs-12);
+    font-weight: 700;
+    display: block;
+    line-height: 1.2;
+    transition: all var(--transition);
+  }
+  .feed-split__seg button.selected {
+    background: var(--tone);
+    color: white;
+  }
+
+  .time-display {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: var(--s-4);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--s-3);
+    align-items: end;
+  }
+  .time-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .time-cell.right { border-left: 1px solid var(--border); padding-left: var(--s-3); }
+  .time-cell .lbl { font-size: var(--fs-12); color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+  .time-cell .val { font-family: var(--font-num); font-size: 36px; font-weight: 800; letter-spacing: -0.02em; line-height: 1; color: var(--fg-strong); }
+  .time-cell .val .unit { font-size: var(--fs-14); font-weight: 600; color: var(--muted); margin-left: 4px; }
+  .time-cell .sub { font-size: var(--fs-12); color: var(--muted); }
+
+  .time-quick {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: var(--s-2);
+  }
+  .time-quick button {
+    padding: 6px 10px;
+    border-radius: var(--r-pill);
+    background: var(--bg-elev);
+    color: var(--muted);
+    font-size: var(--fs-12);
+    font-weight: 600;
+    transition: all var(--transition);
+  }
+  .time-quick button:hover { background: var(--border); color: var(--fg); }
+  .time-quick button.active { background: var(--tone-soft); color: var(--tone); }
+
+  .amount-row {
+    display: flex;
+    gap: var(--s-2);
+    align-items: stretch;
+  }
+  .amount-input {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 0 var(--s-3);
+    min-height: 56px;
+  }
+  .amount-input input {
+    flex: 1;
+    border: 0;
+    background: transparent;
+    outline: none;
+    font-family: var(--font-num);
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--fg-strong);
+    text-align: center;
+    min-width: 0;
+  }
+  .amount-input .unit { color: var(--muted); font-weight: 600; padding-left: 8px; }
+  .amount-step {
+    width: 56px;
+    height: 56px;
+    border-radius: var(--r-md);
+    background: var(--bg-elev);
+    font-family: var(--font-num);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--fg);
+    flex: 0 0 auto;
+    transition: all var(--transition);
+  }
+  .amount-step:hover { background: var(--border); }
+  .amount-step:active { transform: scale(0.96); }
+
+  .repeat-card {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    padding: var(--s-3);
+    background: var(--tone-soft);
+    border-radius: var(--r-md);
+    cursor: pointer;
+    transition: all var(--transition);
+  }
+  .repeat-card:hover { transform: translateY(-1px); }
+  .repeat-card__icon {
+    width: 36px; height: 36px;
+    border-radius: var(--r-md);
+    background: var(--tone);
+    color: white;
+    display: grid; place-items: center;
+    flex: 0 0 auto;
+  }
+  .repeat-card__body { flex: 1; }
+  .repeat-card__t { font-size: var(--fs-13); font-weight: 700; color: var(--tone); }
+  .repeat-card__s { font-size: var(--fs-12); color: var(--muted); margin-top: 2px; }
+
+  .save-bar {
+    display: flex;
+    gap: var(--s-2);
+    padding: var(--s-3) var(--s-4) calc(var(--safe-bot) + var(--s-3));
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    position: sticky;
+    bottom: 0;
+  }
+  .save-bar .btn { flex: 1; }
+
+  /* For sleep tab — two times */
+  .sleep-grid { display: grid; gap: var(--s-2); }
+
+  /* For diaper tab — color/consistency selectors */
+  .icon-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--s-2);
+  }
+  .icon-grid button {
+    padding: var(--s-3) var(--s-2);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--fs-12);
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .icon-grid button.selected {
+    background: var(--tone-soft);
+    border-color: var(--tone);
+    color: var(--tone);
+  }
+  .color-swatch { width: 24px; height: 24px; border-radius: 50%; }
+
+  .voice-tip {
+    display: flex;
+    gap: var(--s-3);
+    padding: var(--s-3);
+    background: var(--bg-elev);
+    border-radius: var(--r-md);
+    align-items: center;
+    font-size: var(--fs-13);
+    color: var(--muted);
+  }
+  .voice-tip strong { color: var(--fg); }
+  .voice-tip svg { color: var(--brand); }
+
+  .pane { display: none; }
+  .pane.active { display: flex; flex-direction: column; gap: var(--s-4); }
+
+  .form-label {
+    font-size: var(--fs-13);
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: var(--s-1);
+  }
+</style>
+</head>
+<body data-active-tab="log">
+
+<div class="app">
+  <header class="appbar">
+    <button class="appbar__back" data-back="log-timeline.html" aria-label="닫기">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+    <div class="appbar__title">기록 추가</div>
+    <button class="appbar__action" aria-label="음성으로 기록" onclick="location.href='log-voice.html'">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+    </button>
+  </header>
+
+  <main class="main" style="padding-bottom: var(--s-4);">
+
+    <!-- Category tabs -->
+    <div class="cat-tabs" role="tablist">
+      <button class="active tone-feed" data-pane="feed">
+        <svg class="icon-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v6c0 2 1 4 4 4s4-2 4-4V2"/><path d="M12 12v10"/></svg>
+        수유
+      </button>
+      <button class="tone-sleep" data-pane="sleep">
+        <svg class="icon-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        수면
+      </button>
+      <button class="tone-diaper" data-pane="diaper">
+        <svg class="icon-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a9 9 0 0 1-18 0V5z"/><path d="M8 21h8"/></svg>
+        배변
+      </button>
+    </div>
+
+    <!-- 수유 -->
+    <div class="pane tone-feed active" data-pane="feed">
+      <div>
+        <div class="form-label">종류</div>
+        <div class="quick-row">
+          <button class="tone-feed selected" data-feed-kind="bottle">분유<span class="small">기본</span></button>
+          <div class="feed-split tone-feed" data-feed-kind="breast" id="feed-breast">
+            <div class="feed-split__label">모유</div>
+            <div class="feed-split__seg">
+              <button type="button" data-side="L" aria-label="모유 왼쪽">좌</button>
+              <button type="button" data-side="R" aria-label="모유 오른쪽">우</button>
+            </div>
+          </div>
+          <button class="tone-feed" data-feed-kind="pumped">유축<span class="small">병 수유</span></button>
+          <button class="tone-feed" data-feed-kind="solid">이유식<span class="small">고형식</span></button>
+          <button class="tone-feed" data-feed-kind="water">물<span class="small">보리차 등</span></button>
+        </div>
+      </div>
+
+      <div>
+        <div class="form-label">시각</div>
+        <div class="time-display tone-feed">
+          <div class="time-cell">
+            <div class="lbl">먹은 시각</div>
+            <div class="val num" id="feed-time">14:23</div>
+            <div class="sub">5월 18일 일 · 방금</div>
+          </div>
+          <div class="time-cell right">
+            <div class="lbl">양</div>
+            <div class="val num"><span id="feed-amt">120</span><span class="unit">ml</span></div>
+            <div class="sub">평균 110ml</div>
+          </div>
+        </div>
+        <div class="time-quick">
+          <button class="active">방금</button>
+          <button>10분 전</button>
+          <button>30분 전</button>
+          <button>1시간 전</button>
+          <button>직접 입력…</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="form-label">양 조정</div>
+        <div class="amount-row">
+          <button class="amount-step" id="amt-down" aria-label="10ml 감소">−10</button>
+          <div class="amount-input">
+            <input type="number" value="120" id="amt-input"/>
+            <span class="unit">ml</span>
+          </div>
+          <button class="amount-step" id="amt-up" aria-label="10ml 증가">+10</button>
+        </div>
+      </div>
+
+      <a class="repeat-card tone-feed" href="#" aria-label="직전 기록 복제">
+        <div class="repeat-card__icon">
+          <svg class="icon-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7M21 3v6h-6"/></svg>
+        </div>
+        <div class="repeat-card__body">
+          <div class="repeat-card__t">직전과 동일하게 복제</div>
+          <div class="repeat-card__s">11:48 · 분유 100ml — 시각만 바꿔서 저장</div>
+        </div>
+      </a>
+
+      <div class="voice-tip">
+        <svg class="icon-20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+        <div><strong>"시리야, 냠냠쿨쿨에 분유 백이십 기록해줘"</strong>로도 한 마디에 끝나요</div>
+      </div>
+    </div>
+
+    <!-- 수면 -->
+    <div class="pane tone-sleep" data-pane="sleep">
+      <div class="sleep-grid">
+        <div class="time-display tone-sleep">
+          <div class="time-cell">
+            <div class="lbl">잠든 시각</div>
+            <div class="val num">12:35</div>
+            <div class="sub">약 1시간 30분 전</div>
+          </div>
+          <div class="time-cell right">
+            <div class="lbl">깬 시각</div>
+            <div class="val num">14:05</div>
+            <div class="sub">방금</div>
+          </div>
+        </div>
+        <div class="time-quick">
+          <button class="active">방금 깼어요</button>
+          <button>아직 자는 중</button>
+          <button>직접 입력</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="form-label">구분</div>
+        <div class="quick-row">
+          <button class="tone-sleep selected">낮잠</button>
+          <button class="tone-sleep">밤잠</button>
+          <button class="tone-sleep">짧은 잠</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="form-label">총 수면 시간</div>
+        <div class="card tone-sleep" style="background: var(--c-sleep-soft); border-color: transparent; text-align: center;">
+          <div class="num" style="font-size: 48px; font-weight: 800; color: var(--c-sleep); letter-spacing: -0.025em;">1시간 30분</div>
+          <div class="muted tiny" style="margin-top: 4px;">평균 낮잠 1시간 15분 · 12% 길어요</div>
+        </div>
+      </div>
+
+      <a class="repeat-card tone-sleep" href="#">
+        <div class="repeat-card__icon">
+          <svg class="icon-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7M21 3v6h-6"/></svg>
+        </div>
+        <div class="repeat-card__body">
+          <div class="repeat-card__t">방금 깼어요 · 한 번에 마감</div>
+          <div class="repeat-card__s">잠든 시각이 비어있어도 됩니다 — 추정으로 채워줘요</div>
+        </div>
+      </a>
+    </div>
+
+    <!-- 배변 -->
+    <div class="pane tone-diaper" data-pane="diaper">
+      <div>
+        <div class="form-label">종류</div>
+        <div class="quick-row">
+          <button class="tone-diaper selected">소변</button>
+          <button class="tone-diaper">대변</button>
+          <button class="tone-diaper">소변+대변</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="form-label">대변 · 색상</div>
+        <div class="icon-grid">
+          <button class="tone-diaper selected"><span class="color-swatch" style="background: oklch(80% 0.15 90);"></span>노랑</button>
+          <button class="tone-diaper"><span class="color-swatch" style="background: oklch(60% 0.13 130);"></span>녹색</button>
+          <button class="tone-diaper"><span class="color-swatch" style="background: oklch(45% 0.06 40);"></span>갈색</button>
+          <button class="tone-diaper"><span class="color-swatch" style="background: oklch(25% 0.05 40);"></span>검정</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="form-label">대변 · 묽기</div>
+        <div class="icon-grid">
+          <button class="tone-diaper">묽음</button>
+          <button class="tone-diaper selected">보통</button>
+          <button class="tone-diaper">단단함</button>
+          <button class="tone-diaper">변비</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="form-label">시각</div>
+        <div class="time-display tone-diaper">
+          <div class="time-cell">
+            <div class="lbl">시각</div>
+            <div class="val num">14:23</div>
+            <div class="sub">5월 18일 일 · 방금</div>
+          </div>
+          <div class="time-cell right">
+            <div class="lbl">발진 여부</div>
+            <div style="display:flex; align-items:center; gap:8px; padding:6px 0;">
+              <label class="toggle">
+                <input type="checkbox"/>
+                <span class="toggle__track"></span>
+              </label>
+              <span class="muted tiny">발진 없음</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <div class="save-bar">
+    <button class="btn btn--ghost">취소</button>
+    <button class="btn btn--primary" id="save">저장</button>
+  </div>
+</div>
+
+<script src="../js/shared.js"></script>
+<script>
+  const tabs = document.querySelectorAll('.cat-tabs button');
+  const panes = document.querySelectorAll('.pane');
+  tabs.forEach(t => t.addEventListener('click', () => {
+    tabs.forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    const id = t.dataset.pane;
+    panes.forEach(p => p.classList.toggle('active', p.dataset.pane === id));
+  }));
+
+  // amount stepper
+  const amt = document.getElementById('amt-input');
+  document.getElementById('amt-up').addEventListener('click', () => { amt.value = (+amt.value || 0) + 10; syncFeed(); });
+  document.getElementById('amt-down').addEventListener('click', () => { amt.value = Math.max(0, (+amt.value || 0) - 10); syncFeed(); });
+  amt.addEventListener('input', syncFeed);
+  function syncFeed() {
+    const el = document.getElementById('feed-amt');
+    if (el) el.textContent = amt.value || 0;
+  }
+
+  // quick selection within a group — supports plain buttons + feed-split cell
+  document.querySelectorAll('.quick-row').forEach(grp => {
+    const split = grp.querySelector('.feed-split');
+
+    // outer kind selection (excluding L/R sub-buttons inside the split)
+    grp.querySelectorAll(':scope > button').forEach(b => b.addEventListener('click', () => {
+      grp.querySelectorAll(':scope > button').forEach(x => x.classList.remove('selected'));
+      b.classList.add('selected');
+      if (split) {
+        split.classList.remove('has-selection');
+        split.querySelectorAll('.feed-split__seg button').forEach(x => x.classList.remove('selected'));
+      }
+    }));
+
+    // L/R sub-selection inside the split — selecting either side activates the split kind
+    if (split) {
+      split.querySelectorAll('.feed-split__seg button').forEach(b => b.addEventListener('click', () => {
+        grp.querySelectorAll(':scope > button').forEach(x => x.classList.remove('selected'));
+        split.classList.add('has-selection');
+        split.querySelectorAll('.feed-split__seg button').forEach(x => x.classList.remove('selected'));
+        b.classList.add('selected');
+      }));
+    }
+  });
+  document.querySelectorAll('.icon-grid').forEach(grp => {
+    grp.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+      grp.querySelectorAll('button').forEach(x => x.classList.remove('selected'));
+      b.classList.add('selected');
+    }));
+  });
+  document.querySelectorAll('.time-quick').forEach(grp => {
+    grp.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+      grp.querySelectorAll('button').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+    }));
+  });
+
+  document.getElementById('save').addEventListener('click', () => {
+    const btn = document.getElementById('save');
+    btn.textContent = '저장 중…';
+    btn.disabled = true;
+    setTimeout(() => { location.href = 'log-timeline.html'; }, 600);
+  });
+</script>
+</body>
+</html>

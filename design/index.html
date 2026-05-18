@@ -1,0 +1,523 @@
+<!doctype html>
+<html lang="ko" class="theme-light" style="color-scheme: light;">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>냠냠쿨쿨 — 디자인</title>
+<link rel="stylesheet" href="css/tokens.css" />
+<link rel="stylesheet" href="css/base.css" />
+<style>
+  /* Force a clean light hub regardless of system dark mode so projector/share
+     screens stay calm and readable. Screens themselves still respect dark mode. */
+  html, body { background: #fafaf9; color: oklch(20% 0.018 250); }
+
+  body { padding: 0; }
+  .hub {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 40px 28px 96px;
+  }
+
+  /* ── top bar ─────────────────────────────────────────────────── */
+  .hub-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 40px;
+    gap: 24px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 700;
+    font-size: 17px;
+    letter-spacing: -0.01em;
+  }
+  .brand-mark {
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    background: var(--brand);
+    display: grid; place-items: center;
+    color: white;
+    font-weight: 800;
+    font-size: 18px;
+    letter-spacing: -0.02em;
+  }
+  .brand small {
+    display: block;
+    font-weight: 500;
+    font-size: 12px;
+    color: oklch(50% 0.014 250);
+    letter-spacing: 0;
+    margin-top: 1px;
+  }
+  .hub-actions { display: flex; gap: 8px; }
+  .hub-btn {
+    height: 38px;
+    padding: 0 14px;
+    border-radius: 10px;
+    background: white;
+    border: 1px solid oklch(91% 0.006 240);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: oklch(35% 0.012 250);
+    cursor: pointer;
+  }
+  .hub-btn:hover { border-color: oklch(75% 0.008 240); color: oklch(20% 0.018 250); }
+
+  /* ── hero ───────────────────────────────────────────────────── */
+  .hero {
+    display: grid;
+    grid-template-columns: 1.35fr 1fr;
+    gap: 48px;
+    align-items: end;
+    margin-bottom: 56px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid oklch(92% 0.005 240);
+  }
+  @media (max-width: 860px) {
+    .hub { padding: 24px 16px 64px; }
+    .hub-bar { margin-bottom: 28px; }
+    .hero { grid-template-columns: 1fr; gap: 24px; padding-bottom: 28px; margin-bottom: 32px; }
+  }
+  .hero h1 {
+    font-size: clamp(36px, 5.2vw, 56px);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    font-weight: 700;
+    text-wrap: balance;
+    color: oklch(15% 0.018 250);
+  }
+  .hero h1 em {
+    font-style: normal;
+    color: var(--brand);
+  }
+  .hero p {
+    margin-top: 18px;
+    max-width: 50ch;
+    color: oklch(40% 0.012 250);
+    font-size: 15px;
+    line-height: 1.65;
+  }
+  .meta-list { display: flex; flex-direction: column; gap: 12px; font-size: 13.5px; }
+  .meta-row { display: flex; gap: 16px; }
+  .meta-row dt { color: oklch(50% 0.014 250); width: 88px; flex: 0 0 88px; font-weight: 500; }
+  .meta-row dd { margin: 0; color: oklch(22% 0.018 250); font-weight: 500; }
+  .palette {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+  .swatch {
+    width: 24px; height: 24px;
+    border-radius: 6px;
+    border: 1px solid oklch(90% 0.006 240);
+  }
+
+  /* ── usecase blocks ─────────────────────────────────────────── */
+  .uc-block { margin-top: 56px; }
+  .uc-head {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .uc-num {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--brand);
+    letter-spacing: 0.06em;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: oklch(96% 0.025 30);
+  }
+  .uc-title { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; color: oklch(15% 0.018 250); }
+  .uc-desc {
+    color: oklch(50% 0.014 250);
+    font-size: 13.5px;
+    margin-left: auto;
+    max-width: 60%;
+    text-align: right;
+    line-height: 1.5;
+  }
+  @media (max-width: 720px) { .uc-desc { display: none; } }
+
+  /* ── card grid ──────────────────────────────────────────────── */
+  .screens-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+  }
+  .screen-card {
+    background: white;
+    border: 1px solid oklch(92% 0.005 240);
+    border-radius: 18px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    position: relative;
+  }
+  .screen-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px -10px oklch(20% 0.018 250 / 0.18);
+    border-color: oklch(72% 0.16 30 / 0.5);
+  }
+  .screen-card:hover .screen-overlay { opacity: 1; transform: translateY(0); }
+
+  .thumb-window {
+    aspect-ratio: 9 / 16;
+    background: #fafafa;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid oklch(94% 0.005 240);
+  }
+  /* The iframe is rendered at full mobile size (390×694) then scaled to fit
+     the card width via transform — gives a real, live preview without
+     bitmap rasterization. scale is computed by JS based on actual card width.
+     color-scheme: light prevents dark scrollbars when the system is in
+     dark mode (the screens inside also self-force light when iframed). */
+  .thumb-window iframe {
+    border: 0;
+    position: absolute;
+    top: 0; left: 0;
+    width: 390px;
+    height: 694px;
+    transform-origin: 0 0;
+    pointer-events: none;
+    background: white;
+    color-scheme: light;
+  }
+  /* Hover affordance: a small white pill in the top-right of the thumbnail —
+     no dark gradient wash. Keeps the card calm during presentation. */
+  .screen-overlay {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 6px 10px 6px 12px;
+    background: white;
+    border: 1px solid oklch(90% 0.006 240);
+    border-radius: 999px;
+    color: oklch(20% 0.018 250);
+    box-shadow: 0 4px 14px -6px oklch(20% 0.018 250 / 0.15);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity 0.18s ease, transform 0.18s ease;
+  }
+  .screen-overlay .arrow {
+    display: inline-grid;
+    place-items: center;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: var(--brand);
+    color: white;
+    font-size: 11px;
+  }
+  .screen-meta {
+    padding: 14px 16px 16px;
+  }
+  .screen-name { font-size: 15px; font-weight: 700; letter-spacing: -0.01em; color: oklch(15% 0.018 250); }
+  .screen-file {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: oklch(55% 0.012 250);
+    margin-top: 3px;
+  }
+  .screen-cat {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--cat, oklch(50% 0.014 250));
+  }
+  .screen-cat::before {
+    content: '';
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--cat, oklch(50% 0.014 250));
+  }
+
+  footer {
+    margin-top: 80px;
+    padding-top: 24px;
+    border-top: 1px solid oklch(92% 0.005 240);
+    color: oklch(50% 0.014 250);
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  footer code {
+    font-family: var(--font-mono);
+    padding: 2px 6px;
+    background: oklch(96% 0.005 240);
+    border-radius: 4px;
+    color: oklch(25% 0.018 250);
+  }
+</style>
+</head>
+<body>
+<div class="hub">
+
+  <header class="hub-bar">
+    <div class="brand">
+      <div class="brand-mark">냠</div>
+      <div>
+        <div>냠냠쿨쿨</div>
+        <small>AI 육아 보조 · 디자인 시스템 v0.2</small>
+      </div>
+    </div>
+    <div class="hub-actions">
+      <a class="hub-btn" href="screens/home.html">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-9 9 9M5 10v10h14V10"/></svg>
+        앱 미리보기
+      </a>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div>
+      <h1>새벽 3시,<br/>한 손으로 충분한<br/><em>육아 동행 앱</em>.</h1>
+      <p>
+        냠냠쿨쿨은 0~24개월 아기 보호자를 위한 AI 보조 앱입니다.
+        울음소리를 분석하고, 수유·수면·배변을 사후 입력으로 가볍게 기록하며,
+        매일의 사진을 출생일수 달력에 자동 정리해 가족과 나눕니다.
+      </p>
+    </div>
+    <dl class="meta-list">
+      <div class="meta-row"><dt>플랫폼</dt><dd>반응형 웹 (모바일 우선) · iOS/Android 적응 예정</dd></div>
+      <div class="meta-row"><dt>방향</dt><dd>Human / approachable · 당근 · 토스 · Airbnb 결</dd></div>
+      <div class="meta-row"><dt>대상</dt><dd>신생아~24개월 보호자, 조부모, 배우자</dd></div>
+      <div class="meta-row"><dt>핵심 원칙</dt><dd>액티브 인터랙션 최소화 · 음성비서 핸즈프리 · 오프라인 폴백</dd></div>
+      <div class="meta-row"><dt>팔레트</dt><dd>
+        <div class="palette" title="brand · feed · sleep · diaper · cry · photo · tip">
+          <span class="swatch" style="background: oklch(64% 0.17 30);"></span>
+          <span class="swatch" style="background: oklch(70% 0.14 60);"></span>
+          <span class="swatch" style="background: oklch(60% 0.13 265);"></span>
+          <span class="swatch" style="background: oklch(62% 0.13 155);"></span>
+          <span class="swatch" style="background: oklch(64% 0.18 18);"></span>
+          <span class="swatch" style="background: oklch(64% 0.14 295);"></span>
+          <span class="swatch" style="background: oklch(64% 0.13 200);"></span>
+        </div>
+      </dd></div>
+    </dl>
+  </section>
+
+  <!-- MAIN: home dashboard ─────────────────────────────────────── -->
+  <section class="uc-block">
+    <div class="uc-head">
+      <span class="uc-num">MAIN</span>
+      <span class="uc-title">홈 · 진입</span>
+      <span class="uc-desc">오늘의 팁 · 지금 상태 · 갤러리/마일스톤 · 최근 활동</span>
+    </div>
+    <div class="screens-grid">
+      <a class="screen-card" href="screens/home.html">
+        <div class="thumb-window"><iframe src="screens/home.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div>
+        <div class="screen-overlay"><span>홈 대시보드 열기</span><span class="arrow">→</span></div>
+        <div class="screen-meta">
+          <div class="screen-name">홈 대시보드</div>
+          <div class="screen-file">screens/home.html</div>
+          <div class="screen-cat" style="--cat: oklch(64% 0.13 200);">오늘의 팁 · 갤러리 · 마일스톤 · 활동</div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- UC-1: 울음 분석 ─────────────────────────────────────────── -->
+  <section class="uc-block">
+    <div class="uc-head">
+      <span class="uc-num">UC-1</span>
+      <span class="uc-title">울음소리 AI 분석</span>
+      <span class="uc-desc">10초 이상 녹음 → 컨텍스트 결합 추론 → 원인 후보 · 추천 행동</span>
+    </div>
+    <div class="screens-grid">
+      <a class="screen-card" href="screens/cry-record.html">
+        <div class="thumb-window"><iframe src="screens/cry-record.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div>
+        <div class="screen-overlay"><span>울음 녹음 열기</span><span class="arrow">→</span></div>
+        <div class="screen-meta">
+          <div class="screen-name">울음 녹음</div>
+          <div class="screen-file">screens/cry-record.html</div>
+          <div class="screen-cat" style="--cat: oklch(64% 0.18 18);">10초 최소 · 최대 30초 · 파형 시각화</div>
+        </div>
+      </a>
+      <a class="screen-card" href="screens/cry-result.html">
+        <div class="thumb-window"><iframe src="screens/cry-result.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div>
+        <div class="screen-overlay"><span>분석 결과 열기</span><span class="arrow">→</span></div>
+        <div class="screen-meta">
+          <div class="screen-name">분석 결과</div>
+          <div class="screen-file">screens/cry-result.html</div>
+          <div class="screen-cat" style="--cat: oklch(64% 0.18 18);">1~3순위 원인 · 근거 · 추천 행동</div>
+        </div>
+      </a>
+      <a class="screen-card" href="screens/cry-history.html">
+        <div class="thumb-window"><iframe src="screens/cry-history.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div>
+        <div class="screen-overlay"><span>패턴 히스토리 열기</span><span class="arrow">→</span></div>
+        <div class="screen-meta">
+          <div class="screen-name">울음 패턴 히스토리</div>
+          <div class="screen-file">screens/cry-history.html</div>
+          <div class="screen-cat" style="--cat: oklch(64% 0.18 18);">시간대별 차트 · LLM 인사이트</div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- UC-2: 육아일지 ─────────────────────────────────────────── -->
+  <section class="uc-block">
+    <div class="uc-head">
+      <span class="uc-num">UC-2</span>
+      <span class="uc-title">육아일지 (수유 · 수면 · 배변)</span>
+      <span class="uc-desc">사후 시각 입력 + 음성비서 핸즈프리 기록</span>
+    </div>
+    <div class="screens-grid">
+      <a class="screen-card" href="screens/log-add.html">
+        <div class="thumb-window"><iframe src="screens/log-add.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div>
+        <div class="screen-overlay"><span>빠른 기록 열기</span><span class="arrow">→</span></div>
+        <div class="screen-meta">
+          <div class="screen-name">빠른 기록</div>
+          <div class="screen-file">screens/log-add.html</div>
+          <div class="screen-cat" style="--cat: oklch(70% 0.14 60);">수유 · 수면 · 배변 탭 + 휠 시각 입력</div>
+        </div>
+      </a>
+      <a class="screen-card" href="screens/log-timeline.html">
+        <div class="thumb-window"><iframe src="screens/log-timeline.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div>
+        <div class="screen-overlay"><span>통합 일지 열기</span><span class="arrow">→</span></div>
+        <div class="screen-meta">
+          <div class="screen-name">통합 일지 타임라인</div>
+          <div class="screen-file">screens/log-timeline.html</div>
+          <div class="screen-cat" style="--cat: oklch(70% 0.14 60);">하루 통합 · 요약 카드 · PDF 공유</div>
+        </div>
+      </a>
+      <a class="screen-card" href="screens/log-voice.html">
+        <div class="thumb-window"><iframe src="screens/log-voice.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div>
+        <div class="screen-overlay"><span>음성비서 연동 열기</span><span class="arrow">→</span></div>
+        <div class="screen-meta">
+          <div class="screen-name">음성비서 연동</div>
+          <div class="screen-file">screens/log-voice.html</div>
+          <div class="screen-cat" style="--cat: oklch(70% 0.14 60);">Siri · Google · Bixby · 발화 예시</div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- UC-3: 갤러리 ──────────────────────────────────────────── -->
+  <section class="uc-block">
+    <div class="uc-head">
+      <span class="uc-num">UC-3</span>
+      <span class="uc-title">가족 초대 사진 갤러리</span>
+      <span class="uc-desc">출생일수(D+N) 달력형 · 가족 권한 관리 · 1년 전 오늘</span>
+    </div>
+    <div class="screens-grid">
+      <a class="screen-card" href="screens/gallery-calendar.html">
+        <div class="thumb-window"><iframe src="screens/gallery-calendar.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div>
+        <div class="screen-overlay"><span>사진 달력 열기</span><span class="arrow">→</span></div>
+        <div class="screen-meta">
+          <div class="screen-name">사진 달력 (D+N)</div>
+          <div class="screen-file">screens/gallery-calendar.html</div>
+          <div class="screen-cat" style="--cat: oklch(64% 0.14 295);">출생일수 캘린더 · 썸네일 리스트업</div>
+        </div>
+      </a>
+      <a class="screen-card" href="screens/gallery-day.html">
+        <div class="thumb-window"><iframe src="screens/gallery-day.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div>
+        <div class="screen-overlay"><span>하루 상세 열기</span><span class="arrow">→</span></div>
+        <div class="screen-meta">
+          <div class="screen-name">하루 사진 상세</div>
+          <div class="screen-file">screens/gallery-day.html</div>
+          <div class="screen-cat" style="--cat: oklch(64% 0.14 295);">캡션 · 마일스톤 태그 · 가족 반응</div>
+        </div>
+      </a>
+      <a class="screen-card" href="screens/family-invite.html">
+        <div class="thumb-window"><iframe src="screens/family-invite.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div>
+        <div class="screen-overlay"><span>가족 초대 열기</span><span class="arrow">→</span></div>
+        <div class="screen-meta">
+          <div class="screen-name">가족 초대 · 권한</div>
+          <div class="screen-file">screens/family-invite.html</div>
+          <div class="screen-cat" style="--cat: oklch(64% 0.14 295);">관리자 / 보호자 / 뷰어 · 카톡 초대</div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- UC-4: 아기 정보 · AI 설정 ─────────────────────────────── -->
+  <section class="uc-block">
+    <div class="uc-head">
+      <span class="uc-num">UC-4</span>
+      <span class="uc-title">아기 정보 · AI 설정</span>
+      <span class="uc-desc">프로필 · WHO 성장 곡선 · LLM 프로바이더 (Gemini · OpenAI · Claude · Gemma 4)</span>
+    </div>
+    <div class="screens-grid">
+      <a class="screen-card" href="screens/baby-profile.html">
+        <div class="thumb-window"><iframe src="screens/baby-profile.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div>
+        <div class="screen-overlay"><span>아기 프로필 열기</span><span class="arrow">→</span></div>
+        <div class="screen-meta">
+          <div class="screen-name">아기 프로필</div>
+          <div class="screen-file">screens/baby-profile.html</div>
+          <div class="screen-cat" style="--cat: oklch(64% 0.17 30);">다중 아기 · 알러지 · 프로필 사진</div>
+        </div>
+      </a>
+      <a class="screen-card" href="screens/growth.html">
+        <div class="thumb-window"><iframe src="screens/growth.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div>
+        <div class="screen-overlay"><span>성장 기록 열기</span><span class="arrow">→</span></div>
+        <div class="screen-meta">
+          <div class="screen-name">성장 기록</div>
+          <div class="screen-file">screens/growth.html</div>
+          <div class="screen-cat" style="--cat: oklch(64% 0.17 30);">WHO 곡선 · 백분위 · 예방접종</div>
+        </div>
+      </a>
+      <a class="screen-card" href="screens/ai-provider.html">
+        <div class="thumb-window"><iframe src="screens/ai-provider.html" loading="lazy" scrolling="no" tabindex="-1"></iframe></div>
+        <div class="screen-overlay"><span>AI 프로바이더 열기</span><span class="arrow">→</span></div>
+        <div class="screen-meta">
+          <div class="screen-name">AI 프로바이더</div>
+          <div class="screen-file">screens/ai-provider.html</div>
+          <div class="screen-cat" style="--cat: oklch(64% 0.17 30);">Gemini 기본 · BYOK · Gemma 4 오프라인</div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <footer>
+    <div>© 냠냠쿨쿨 디자인 · 2026-05 · usecase: <code>docs/usecase/</code></div>
+    <div>모든 화면은 <code>design/screens/</code> 안에 있어요. 카드 클릭 → 해당 화면, 화면에서 ← 뒤로 시 다시 이 허브로 돌아옵니다.</div>
+  </footer>
+</div>
+
+<script>
+  // ── Live iframe thumbnails: scale each iframe so its 390px width fits its
+  //    parent .thumb-window. Recomputed on resize + when each iframe loads
+  //    (in case content layout shifts the inner page height). ──
+  function fitThumbs() {
+    document.querySelectorAll('.thumb-window').forEach((win) => {
+      const iframe = win.querySelector('iframe');
+      if (!iframe) return;
+      const w = win.clientWidth;
+      if (!w) return;
+      const scale = w / 390; // iframe natural width
+      iframe.style.transform = 'scale(' + scale + ')';
+      // height of the visible card = width * 16/9 (matches aspect-ratio)
+      // we let the iframe render at 694px tall and clip the rest via overflow:hidden.
+    });
+  }
+  fitThumbs();
+  window.addEventListener('resize', fitThumbs);
+  document.querySelectorAll('.thumb-window iframe').forEach((f) => {
+    f.addEventListener('load', fitThumbs);
+  });
+</script>
+</body>
+</html>

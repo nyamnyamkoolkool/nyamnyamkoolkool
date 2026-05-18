@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>가족 · 권한 — 냠냠쿨쿨</title>
+<link rel="stylesheet" href="../css/tokens.css" />
+<link rel="stylesheet" href="../css/base.css" />
+<style>
+  .group-hero {
+    text-align: center;
+    padding: var(--s-2) var(--s-4) var(--s-4);
+  }
+  .group-hero .stack-avatars {
+    display: inline-flex;
+    margin-bottom: var(--s-3);
+  }
+  .stack-avatars .av {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    display: grid; place-items: center;
+    color: white;
+    font-weight: 800;
+    font-size: var(--fs-20);
+    border: 3px solid var(--bg);
+    margin-left: -16px;
+    box-shadow: var(--shadow-sm);
+  }
+  .stack-avatars .av:first-child { margin-left: 0; }
+  .group-hero h1 {
+    font-family: var(--font-display);
+    font-size: var(--fs-24);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .group-hero p { color: var(--muted); margin-top: 4px; font-size: var(--fs-13); }
+
+  .member {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    padding: var(--s-3);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+  }
+  .member__av {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    display: grid; place-items: center;
+    color: white;
+    font-weight: 800;
+    font-size: var(--fs-15);
+    flex: 0 0 auto;
+  }
+  .member__body { flex: 1; min-width: 0; }
+  .member__name { font-size: var(--fs-15); font-weight: 700; }
+  .member__sub { font-size: var(--fs-12); color: var(--muted); margin-top: 2px; }
+  .role-select {
+    border: 1px solid var(--border);
+    background: var(--bg-elev);
+    border-radius: var(--r-md);
+    padding: 6px 28px 6px 12px;
+    font-size: var(--fs-13);
+    font-weight: 600;
+    color: var(--fg);
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 14px;
+    min-height: 32px;
+  }
+
+  .role-card {
+    display: flex;
+    gap: var(--s-3);
+    padding: var(--s-3);
+    border-radius: var(--r-md);
+    background: var(--tone-soft);
+  }
+  .role-card__icon {
+    width: 36px; height: 36px;
+    border-radius: var(--r-md);
+    background: var(--tone);
+    color: white;
+    display: grid; place-items: center;
+    flex: 0 0 auto;
+  }
+  .role-card__t { font-size: var(--fs-14); font-weight: 700; color: var(--tone); }
+  .role-card__d { font-size: var(--fs-12); color: var(--muted); margin-top: 4px; line-height: 1.5; }
+
+  .invite-cta {
+    background: var(--surface);
+    border: 2px dashed var(--border-strong);
+    border-radius: var(--r-lg);
+    padding: var(--s-5);
+    text-align: center;
+  }
+  .invite-cta h3 { font-size: var(--fs-17); font-weight: 700; letter-spacing: -0.01em; }
+  .invite-cta p { color: var(--muted); font-size: var(--fs-13); margin-top: 4px; }
+
+  .channel-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--s-2);
+    margin-top: var(--s-3);
+  }
+  .channel-row button {
+    padding: var(--s-3) var(--s-2);
+    border-radius: var(--r-md);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: center;
+    font-size: var(--fs-11);
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .channel-row .ch-icon {
+    width: 36px; height: 36px;
+    border-radius: var(--r-md);
+    display: grid; place-items: center;
+    color: white;
+    font-weight: 800;
+    font-size: 14px;
+  }
+  .ch-kakao { background: oklch(85% 0.18 95); color: oklch(30% 0.04 60); }
+  .ch-sms { background: oklch(64% 0.16 145); }
+  .ch-mail { background: oklch(58% 0.18 240); }
+  .ch-link { background: var(--fg); color: var(--bg); }
+
+  .link-row {
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+    background: var(--bg-elev);
+    border-radius: var(--r-md);
+    padding: 4px 6px 4px 12px;
+    margin-top: var(--s-3);
+  }
+  .link-row code {
+    flex: 1;
+    font-family: var(--font-mono);
+    font-size: var(--fs-12);
+    color: var(--muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .link-row button {
+    padding: 6px 12px;
+    border-radius: var(--r-pill);
+    background: var(--brand);
+    color: var(--brand-fg);
+    font-size: var(--fs-12);
+    font-weight: 700;
+  }
+</style>
+</head>
+<body data-active-tab="gallery">
+
+<div class="app">
+  <header class="appbar">
+    <button class="appbar__back" data-back="gallery-calendar.html" aria-label="뒤로">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </button>
+    <div class="appbar__title">가족 · 권한</div>
+    <button class="appbar__action" aria-label="더보기">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="6" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="18" r="1.5"/></svg>
+    </button>
+  </header>
+
+  <main class="main">
+
+    <section class="group-hero">
+      <div class="stack-avatars" aria-hidden="true">
+        <span class="av" style="background: oklch(64% 0.17 30);">지</span>
+        <span class="av" style="background: oklch(60% 0.13 265);">민</span>
+        <span class="av" style="background: oklch(70% 0.14 60);">영</span>
+        <span class="av" style="background: oklch(62% 0.13 155);">시</span>
+      </div>
+      <h1>김하늘이네 가족</h1>
+      <p>4명이 함께 양육에 참여하고 있어요 · 2026년 1월 7일 시작</p>
+    </section>
+
+    <section>
+      <div class="section-title"><span>구성원</span></div>
+      <div class="col" style="margin-top: var(--s-2);">
+        <div class="member">
+          <div class="member__av" style="background: oklch(64% 0.17 30);">지</div>
+          <div class="member__body">
+            <div class="member__name">지영 (엄마)</div>
+            <div class="member__sub">하늘이 엄마 · 가입일 2026-01-07 · 본인</div>
+          </div>
+          <span class="pill" style="background: var(--c-photo-soft); color: var(--c-photo);">관리자</span>
+        </div>
+        <div class="member">
+          <div class="member__av" style="background: oklch(60% 0.13 265);">민</div>
+          <div class="member__body">
+            <div class="member__name">민수 (아빠)</div>
+            <div class="member__sub">하늘이 아빠 · 가입일 2026-01-08</div>
+          </div>
+          <select class="role-select" aria-label="권한 선택">
+            <option>보호자</option>
+            <option>관리자</option>
+            <option>뷰어</option>
+          </select>
+        </div>
+        <div class="member">
+          <div class="member__av" style="background: oklch(70% 0.14 60);">영</div>
+          <div class="member__body">
+            <div class="member__name">영자 (외할머니)</div>
+            <div class="member__sub">평일 낮 돌봄 · 가입일 2026-02-14</div>
+          </div>
+          <select class="role-select">
+            <option>뷰어</option>
+            <option selected>보호자</option>
+            <option>관리자</option>
+          </select>
+        </div>
+        <div class="member">
+          <div class="member__av" style="background: oklch(62% 0.13 155);">시</div>
+          <div class="member__body">
+            <div class="member__name">시어머니</div>
+            <div class="member__sub">주말 방문 · 가입일 2026-03-02</div>
+          </div>
+          <select class="role-select">
+            <option selected>뷰어</option>
+            <option>보호자</option>
+            <option>관리자</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <section class="invite-cta">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:36px; height:36px; color: var(--brand); margin: 0 auto 8px;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M16 11h6"/></svg>
+      <h3>가족 초대하기</h3>
+      <p>초대 링크는 7일 후 만료 · 단일 사용 토큰</p>
+      <div class="channel-row">
+        <button>
+          <span class="ch-icon ch-kakao">K</span>
+          카카오톡
+        </button>
+        <button>
+          <span class="ch-icon ch-sms">
+            <svg class="icon-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </span>
+          SMS
+        </button>
+        <button>
+          <span class="ch-icon ch-mail">
+            <svg class="icon-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><path d="M22 6l-10 7L2 6"/></svg>
+          </span>
+          이메일
+        </button>
+        <button>
+          <span class="ch-icon ch-link">
+            <svg class="icon-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.5 1.5"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.5-1.5"/></svg>
+          </span>
+          링크 복사
+        </button>
+      </div>
+      <div class="link-row">
+        <code>nyamkool.app/i/8K3-x9z</code>
+        <button>복사</button>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title"><span>권한 레벨이란?</span></div>
+      <div class="col" style="margin-top: var(--s-2);">
+        <div class="role-card tone-photo">
+          <div class="role-card__icon">
+            <svg class="icon-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 7h7l-5.5 4.5 2 7L12 16l-6.5 4.5 2-7L2 9h7z"/></svg>
+          </div>
+          <div>
+            <div class="role-card__t">관리자</div>
+            <div class="role-card__d">모든 기록 작성·수정·삭제 · 멤버 관리 · 권한 변경 가능</div>
+          </div>
+        </div>
+        <div class="role-card tone-sleep">
+          <div class="role-card__icon">
+            <svg class="icon-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          </div>
+          <div>
+            <div class="role-card__t">보호자</div>
+            <div class="role-card__d">모든 기록 작성·수정 · 자기 작성 기록만 삭제 · 멤버 변경 불가</div>
+          </div>
+        </div>
+        <div class="role-card tone-diaper">
+          <div class="role-card__icon">
+            <svg class="icon-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </div>
+          <div>
+            <div class="role-card__t">뷰어 (조부모용)</div>
+            <div class="role-card__d">조회 · 사진 업로드만 가능 · 기록 수정/삭제 불가</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" style="background: var(--bg-elev); border-color: transparent;">
+      <div class="row gap-3">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--success); flex: 0 0 24px;"><path d="M12 22s8-4 8-12V5l-8-3-8 3v5c0 8 8 12 8 12z"/></svg>
+        <div>
+          <div style="font-size: var(--fs-14); font-weight: 700;">가족 그룹은 E2E 암호화로 보호돼요</div>
+          <div class="muted tiny" style="margin-top: 4px;">초대 링크 외부에서는 사진과 기록을 절대 볼 수 없습니다</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="tabbar">
+    <a class="tabbar__item" data-tab="home" href="home.html"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-9 9 9M5 10v10h14V10"/></svg>홈</a>
+    <a class="tabbar__item" data-tab="log" href="log-timeline.html"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>일지</a>
+    <a class="tabbar__item tabbar__item--cry" data-tab="cry" href="cry-record.html"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>울음</a>
+    <a class="tabbar__item" data-tab="gallery" href="gallery-calendar.html"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg>갤러리</a>
+    <a class="tabbar__item" data-tab="settings" href="baby-profile.html"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 9 19.4a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.55-1H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H9a1.7 1.7 0 0 0 1-1.55V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87V9a1.7 1.7 0 0 0 1.55 1H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.55 1z"/></svg>설정</a>
+  </nav>
+</div>
+
+<script src="../js/shared.js"></script>
+</body>
+</html>

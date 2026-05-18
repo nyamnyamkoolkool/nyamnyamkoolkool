@@ -1,0 +1,22 @@
+# Personal / IDE / tooling
+.claude/
+.vscode/
+.idea/
+
+# OS
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Design source binaries (excluded by project decision — keep elsewhere)
+design/index.pptx
+design/**/*.pptx
+design/**/*.psd
+design/**/*.fig
+design/**/*.sketch
+
+# Node / build artifacts (future-proof)
+node_modules/
+dist/
+build/
+*.log

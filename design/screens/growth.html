@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>성장 기록 — 냠냠쿨쿨</title>
+<link rel="stylesheet" href="../css/tokens.css" />
+<link rel="stylesheet" href="../css/base.css" />
+<style>
+  .metric-tabs {
+    display: flex;
+    background: var(--bg-elev);
+    border-radius: var(--r-md);
+    padding: 4px;
+    gap: 2px;
+  }
+  .metric-tabs button {
+    flex: 1;
+    padding: 10px 8px;
+    border-radius: calc(var(--r-md) - 2px);
+    font-size: var(--fs-13);
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .metric-tabs button.active {
+    background: var(--surface);
+    color: var(--fg);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .latest {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    padding: var(--s-4);
+    background: var(--brand-soft);
+    border-radius: var(--r-lg);
+  }
+  .latest__lbl { font-size: var(--fs-12); color: var(--brand); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+  .latest__v {
+    font-family: var(--font-num);
+    font-size: 44px;
+    font-weight: 800;
+    color: var(--fg-strong);
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-top: 6px;
+  }
+  .latest__unit { font-size: 16px; color: var(--muted); font-weight: 600; margin-left: 4px; }
+  .latest__s { font-size: var(--fs-12); color: var(--muted); margin-top: 6px; }
+  .latest__pct {
+    background: var(--brand);
+    color: var(--brand-fg);
+    padding: 8px 14px;
+    border-radius: var(--r-pill);
+    font-size: var(--fs-13);
+    font-weight: 700;
+  }
+
+  .chart-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: var(--s-3) var(--s-2) var(--s-3) var(--s-3);
+    overflow: hidden;
+  }
+  .chart-card svg { display: block; width: 100%; height: auto; }
+
+  /* measurements list */
+  .measure-row {
+    display: grid;
+    grid-template-columns: 64px 1fr auto;
+    align-items: center;
+    padding: var(--s-3) 0;
+    gap: var(--s-3);
+    border-bottom: 1px solid var(--border);
+  }
+  .measure-row:last-child { border-bottom: 0; }
+  .measure-row__date {
+    font-family: var(--font-num);
+    font-size: var(--fs-13);
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .measure-row__date strong { display: block; font-size: var(--fs-15); color: var(--fg); font-weight: 700; }
+  .measure-row__metrics { display: flex; gap: var(--s-3); font-size: var(--fs-13); color: var(--muted); }
+  .measure-row__metrics strong { color: var(--fg); font-weight: 700; }
+  .measure-row__pct {
+    font-family: var(--font-num);
+    font-size: var(--fs-13);
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: var(--r-pill);
+    background: var(--brand-soft);
+    color: var(--brand);
+  }
+
+  /* vaccination */
+  .vacc-item {
+    display: flex;
+    gap: var(--s-3);
+    padding: var(--s-3);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    align-items: center;
+  }
+  .vacc-item.upcoming { border-color: var(--warning); background: oklch(96% 0.04 75); }
+  :root.theme-dark .vacc-item.upcoming, :root:not(.theme-light) .vacc-item.upcoming {
+    background: oklch(26% 0.05 75);
+  }
+  .vacc-item.done { opacity: 0.7; }
+  .vacc-date {
+    text-align: center;
+    width: 60px;
+    flex: 0 0 60px;
+    padding: 8px 0;
+    border-radius: var(--r-md);
+    background: var(--bg-elev);
+    font-variant-numeric: tabular-nums;
+  }
+  .vacc-item.upcoming .vacc-date { background: var(--warning); color: white; }
+  .vacc-item.done .vacc-date { background: var(--success); color: white; }
+  .vacc-date .m { font-size: 10px; font-weight: 700; }
+  .vacc-date .d { font-size: 22px; font-weight: 800; line-height: 1; }
+  .vacc__body { flex: 1; }
+  .vacc__t { font-size: var(--fs-15); font-weight: 700; }
+  .vacc__s { font-size: var(--fs-12); color: var(--muted); margin-top: 2px; }
+  .vacc-item.done .vacc__t { text-decoration: line-through; color: var(--muted); }
+  .vacc-item .check {
+    color: var(--success);
+  }
+
+  .add-measure {
+    border: 2px dashed var(--border-strong);
+    border-radius: var(--r-md);
+    padding: var(--s-3);
+    text-align: center;
+    color: var(--muted);
+    font-size: var(--fs-13);
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+  }
+  .add-measure:hover { color: var(--brand); border-color: var(--brand); }
+</style>
+</head>
+<body data-active-tab="settings">
+
+<div class="app">
+  <header class="appbar">
+    <button class="appbar__back" data-back="baby-profile.html" aria-label="뒤로">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </button>
+    <div class="appbar__title">성장 기록</div>
+    <button class="appbar__action" aria-label="공유">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
+    </button>
+  </header>
+
+  <main class="main">
+
+    <div class="metric-tabs">
+      <button class="active">체중</button>
+      <button>신장</button>
+      <button>머리둘레</button>
+    </div>
+
+    <section class="latest">
+      <div>
+        <div class="latest__lbl">최근 체중 · 5월 14일</div>
+        <div class="latest__v">6.84<span class="latest__unit">kg</span></div>
+        <div class="latest__s">출생 대비 +3.63kg · 출생 시 3.21kg</div>
+      </div>
+      <span class="latest__pct">백분위 62%</span>
+    </section>
+
+    <section class="chart-card">
+      <svg viewBox="0 0 400 240" xmlns="http://www.w3.org/2000/svg">
+        <!-- gridlines -->
+        <g stroke="var(--border)" stroke-width="1">
+          <line x1="40" y1="20" x2="400" y2="20"/>
+          <line x1="40" y1="70" x2="400" y2="70"/>
+          <line x1="40" y1="120" x2="400" y2="120"/>
+          <line x1="40" y1="170" x2="400" y2="170"/>
+          <line x1="40" y1="220" x2="400" y2="220"/>
+        </g>
+        <!-- y axis labels -->
+        <g font-family="system-ui" font-size="10" fill="var(--muted)">
+          <text x="34" y="24" text-anchor="end">10kg</text>
+          <text x="34" y="74" text-anchor="end">8</text>
+          <text x="34" y="124" text-anchor="end">6</text>
+          <text x="34" y="174" text-anchor="end">4</text>
+          <text x="34" y="224" text-anchor="end">2</text>
+        </g>
+        <!-- percentile bands -->
+        <path d="M40,206 Q120,195 200,180 T400,140" stroke="var(--c-tip)" stroke-width="1" stroke-dasharray="3,3" fill="none" opacity="0.4"/>
+        <path d="M40,196 Q120,180 200,160 T400,110" stroke="var(--c-tip)" stroke-width="1" stroke-dasharray="3,3" fill="none" opacity="0.4"/>
+        <path d="M40,210 Q120,202 200,192 T400,160" stroke="var(--c-tip)" stroke-width="1" stroke-dasharray="3,3" fill="none" opacity="0.4"/>
+        <!-- percentile labels -->
+        <g font-family="system-ui" font-size="9" fill="var(--c-tip)" opacity="0.7">
+          <text x="395" y="140" text-anchor="end">85%</text>
+          <text x="395" y="110" text-anchor="end">50%</text>
+          <text x="395" y="162" text-anchor="end">15%</text>
+        </g>
+        <!-- actual data line -->
+        <path d="M50,210 L100,200 L150,184 L200,168 L250,150 L300,138" fill="none" stroke="var(--brand)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- data points -->
+        <g fill="var(--brand)">
+          <circle cx="50" cy="210" r="4"/>
+          <circle cx="100" cy="200" r="4"/>
+          <circle cx="150" cy="184" r="4"/>
+          <circle cx="200" cy="168" r="4"/>
+          <circle cx="250" cy="150" r="4"/>
+          <circle cx="300" cy="138" r="4" stroke="var(--surface)" stroke-width="3"/>
+        </g>
+        <!-- x axis -->
+        <g font-family="system-ui" font-size="10" fill="var(--muted)">
+          <text x="50" y="234" text-anchor="middle">출생</text>
+          <text x="100" y="234" text-anchor="middle">1m</text>
+          <text x="150" y="234" text-anchor="middle">2m</text>
+          <text x="200" y="234" text-anchor="middle">3m</text>
+          <text x="250" y="234" text-anchor="middle">4m</text>
+          <text x="300" y="234" text-anchor="middle">5m</text>
+          <text x="350" y="234" text-anchor="middle">6m</text>
+        </g>
+        <!-- legend -->
+        <g transform="translate(50, 14)">
+          <rect x="0" y="-8" width="3" height="10" fill="var(--brand)"/>
+          <text x="8" y="0" font-family="system-ui" font-size="10" font-weight="700" fill="var(--fg)">하늘이 체중</text>
+          <text x="80" y="0" font-family="system-ui" font-size="10" fill="var(--muted)">— — WHO 백분위 (15·50·85)</text>
+        </g>
+      </svg>
+    </section>
+
+    <section>
+      <div class="section-title"><span>측정 기록</span><a class="link">+ 추가</a></div>
+      <div class="card" style="padding: 4px var(--s-4); margin-top: var(--s-2);">
+        <div class="measure-row">
+          <div class="measure-row__date"><strong>5/14</strong>D+128</div>
+          <div class="measure-row__metrics"><span><strong>6.84</strong>kg</span><span><strong>63.5</strong>cm</span><span><strong>41.2</strong>cm</span></div>
+          <span class="measure-row__pct">62%</span>
+        </div>
+        <div class="measure-row">
+          <div class="measure-row__date"><strong>4/12</strong>D+96</div>
+          <div class="measure-row__metrics"><span><strong>6.20</strong>kg</span><span><strong>61.0</strong>cm</span><span><strong>40.4</strong>cm</span></div>
+          <span class="measure-row__pct">58%</span>
+        </div>
+        <div class="measure-row">
+          <div class="measure-row__date"><strong>3/10</strong>D+63</div>
+          <div class="measure-row__metrics"><span><strong>5.40</strong>kg</span><span><strong>58.3</strong>cm</span><span><strong>39.2</strong>cm</span></div>
+          <span class="measure-row__pct">55%</span>
+        </div>
+        <div class="measure-row">
+          <div class="measure-row__date"><strong>2/14</strong>D+39</div>
+          <div class="measure-row__metrics"><span><strong>4.55</strong>kg</span><span><strong>55.2</strong>cm</span><span><strong>38.0</strong>cm</span></div>
+          <span class="measure-row__pct">52%</span>
+        </div>
+        <div class="measure-row">
+          <div class="measure-row__date"><strong>1/07</strong>출생</div>
+          <div class="measure-row__metrics"><span><strong>3.21</strong>kg</span><span><strong>49.5</strong>cm</span><span><strong>35.0</strong>cm</span></div>
+          <span class="measure-row__pct">48%</span>
+        </div>
+      </div>
+      <button class="add-measure" style="margin-top: var(--s-2);">
+        + 새 측정 기록 추가
+      </button>
+    </section>
+
+    <section>
+      <div class="section-title"><span>예방접종</span><a class="link">전체 일정</a></div>
+      <div class="col" style="margin-top: var(--s-2);">
+        <div class="vacc-item upcoming">
+          <div class="vacc-date">
+            <div class="m">5월</div>
+            <div class="d">22</div>
+          </div>
+          <div class="vacc__body">
+            <div class="vacc__t">DTP 2차 · 폴리오 2차</div>
+            <div class="vacc__s">다음주 화요일 · 다정 소아청소년과 09:30 예약됨</div>
+          </div>
+          <button class="btn btn--ghost" style="height: 36px; padding: 0 14px; font-size: 13px; background: white;">변경</button>
+        </div>
+        <div class="vacc-item">
+          <div class="vacc-date">
+            <div class="m">7월</div>
+            <div class="d">12</div>
+          </div>
+          <div class="vacc__body">
+            <div class="vacc__t">DTP 3차 · 폴리오 3차</div>
+            <div class="vacc__s">생후 6개월 · 미예약</div>
+          </div>
+        </div>
+        <div class="vacc-item done">
+          <div class="vacc-date">
+            <div class="m">3월</div>
+            <div class="d">07</div>
+          </div>
+          <div class="vacc__body">
+            <div class="vacc__t">DTP 1차 · 폴리오 1차 ✓</div>
+            <div class="vacc__s">완료 · 영상 첨부됨</div>
+          </div>
+          <svg class="icon check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+        </div>
+        <div class="vacc-item done">
+          <div class="vacc-date">
+            <div class="m">1월</div>
+            <div class="d">08</div>
+          </div>
+          <div class="vacc__body">
+            <div class="vacc__t">BCG · B형간염 1차 ✓</div>
+            <div class="vacc__s">출생 다음날 · 완료</div>
+          </div>
+          <svg class="icon check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="tabbar">
+    <a class="tabbar__item" data-tab="home" href="home.html"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-9 9 9M5 10v10h14V10"/></svg>홈</a>
+    <a class="tabbar__item" data-tab="log" href="log-timeline.html"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>일지</a>
+    <a class="tabbar__item tabbar__item--cry" data-tab="cry" href="cry-record.html"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>울음</a>
+    <a class="tabbar__item" data-tab="gallery" href="gallery-calendar.html"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg>갤러리</a>
+    <a class="tabbar__item" data-tab="settings" href="baby-profile.html"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 9 19.4a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.55-1H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H9a1.7 1.7 0 0 0 1-1.55V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87V9a1.7 1.7 0 0 0 1.55 1H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.55 1z"/></svg>설정</a>
+  </nav>
+</div>
+
+<script src="../js/shared.js"></script>
+<script>
+  document.querySelectorAll('.metric-tabs button').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.metric-tabs button').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>사진 달력 — 냠냠쿨쿨</title>
+<link rel="stylesheet" href="../css/tokens.css" />
+<link rel="stylesheet" href="../css/base.css" />
+<style>
+  .month-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 var(--s-4);
+  }
+  .month-bar__main { text-align: center; }
+  /* 쑥쑥찰칵 결: 출생일수가 1차 라벨, 날짜는 보조 */
+  .month-bar__lbl {
+    font-size: 10px;
+    color: var(--muted);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .month-bar__dol {
+    font-family: var(--font-display);
+    font-size: var(--fs-28);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    color: var(--fg-strong);
+    font-variant-numeric: tabular-nums;
+    margin-top: 2px;
+  }
+  .month-bar__date { font-size: var(--fs-12); color: var(--muted); font-weight: 600; margin-top: 4px; }
+  .month-bar__date strong { color: var(--fg); font-weight: 700; }
+  .nav-btn {
+    width: 40px; height: 40px;
+    border-radius: var(--r-pill);
+    background: var(--bg-elev);
+    color: var(--fg);
+    display: grid; place-items: center;
+  }
+  .nav-btn:hover { background: var(--border); }
+
+  /* memory cards */
+  .memory-strip {
+    display: flex;
+    gap: var(--s-3);
+    overflow-x: auto;
+    padding: 0 var(--s-4);
+    margin: 0 calc(-1 * var(--s-4));
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .memory-strip::-webkit-scrollbar { display: none; }
+  .memory-card {
+    flex: 0 0 78%;
+    max-width: 320px;
+    border-radius: var(--r-lg);
+    padding: var(--s-3);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    aspect-ratio: 3 / 2;
+    background-size: cover;
+    background-position: center;
+    scroll-snap-align: start;
+    position: relative;
+    overflow: hidden;
+  }
+  .memory-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 30%, oklch(0% 0 0 / 0.55) 100%);
+  }
+  .memory-card > * { position: relative; z-index: 1; }
+  .mc-1 { background: linear-gradient(135deg, oklch(70% 0.15 30), oklch(60% 0.16 320)); }
+  .mc-2 { background: linear-gradient(135deg, oklch(64% 0.14 295), oklch(60% 0.13 265)); }
+  .mc-3 { background: linear-gradient(135deg, oklch(70% 0.14 60), oklch(60% 0.12 155)); }
+  .memory-card__top {
+    font-size: var(--fs-11);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    opacity: 0.9;
+  }
+  .memory-card__t { font-size: var(--fs-18); font-weight: 800; letter-spacing: -0.01em; line-height: 1.25; }
+  .memory-card__s { font-size: var(--fs-12); opacity: 0.85; margin-top: 2px; }
+
+  /* weekday labels */
+  .week-head {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    padding: 0 var(--s-3);
+    margin-top: var(--s-2);
+  }
+  .week-head span {
+    text-align: center;
+    font-size: var(--fs-11);
+    font-weight: 600;
+    color: var(--muted);
+    padding: 4px 0;
+  }
+  .week-head .sun { color: var(--c-cry); }
+  .week-head .sat { color: var(--c-sleep); }
+
+  /* calendar grid — D+N 우선 (쑥쑥찰칵 결) */
+  .cal {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    padding: 0 var(--s-3);
+  }
+  .cal__cell {
+    aspect-ratio: 1 / 1.22;
+    border-radius: 10px;
+    background: var(--bg-elev);
+    padding: 6px 6px 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid transparent;
+    transition: transform var(--transition);
+    color: var(--fg);
+  }
+  .cal__cell.empty { background: var(--bg-elev); }
+  .cal__cell.empty .dol-num { color: var(--muted); }
+  .cal__cell.outside { opacity: 0.30; pointer-events: none; }
+  .cal__cell:hover { transform: translateY(-1px); }
+  .cal__cell.today {
+    border-color: var(--brand);
+    box-shadow: 0 0 0 1px var(--brand) inset;
+    background: var(--brand-soft);
+  }
+  .cal__cell.today .dol-num { color: var(--brand); }
+  .cal__cell.has-photo {
+    background-image: var(--photo);
+    background-size: cover;
+    background-position: center;
+    color: white;
+  }
+  .cal__cell.has-photo .dol-num,
+  .cal__cell.has-photo .dol-suffix,
+  .cal__cell.has-photo .date-tag { color: white; }
+  .cal__cell.has-photo::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, oklch(0% 0 0 / 0.35) 0%, transparent 35%, oklch(0% 0 0 / 0.60) 100%);
+  }
+  .cal__cell.has-photo.today {
+    background-image: var(--photo);
+    background-color: transparent;
+    box-shadow: 0 0 0 2px var(--brand) inset;
+  }
+  .cal__cell > * { position: relative; z-index: 1; }
+
+  /* 좌상단: 달력 날짜 (보조) */
+  .cal__cell .date-tag {
+    position: absolute;
+    top: 5px; left: 6px;
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .cal__cell .date-tag.sun-mark { color: var(--c-cry); }
+  .cal__cell .date-tag.sat-mark { color: var(--c-sleep); }
+  .cal__cell.has-photo .date-tag {
+    background: oklch(0% 0 0 / 0.35);
+    backdrop-filter: blur(3px);
+    padding: 1px 5px;
+    border-radius: var(--r-pill);
+  }
+
+  /* 중앙 하단: 출생일수 (주 라벨) */
+  .cal__cell .dol-block {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 1px;
+    line-height: 1;
+  }
+  .cal__cell .dol-num {
+    font-family: var(--font-num);
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    font-variant-numeric: tabular-nums;
+  }
+  .cal__cell .dol-suffix {
+    font-size: 8px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-left: 1px;
+  }
+
+  /* 우상단: 사진 개수 */
+  .cal__cell .count {
+    position: absolute;
+    top: 5px; right: 5px;
+    z-index: 2;
+    background: oklch(0% 0 0 / 0.40);
+    backdrop-filter: blur(4px);
+    color: white;
+    border-radius: var(--r-pill);
+    padding: 1px 6px;
+    font-size: 9px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  /* 좌하단: 마일스톤 */
+  .cal__cell .milestone {
+    position: absolute;
+    bottom: 4px; right: 6px;
+    z-index: 2;
+    font-size: 11px;
+    filter: drop-shadow(0 1px 2px oklch(0% 0 0 / 0.4));
+  }
+
+  .legend-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 var(--s-4);
+    font-size: var(--fs-12);
+    color: var(--muted);
+  }
+
+  /* view toggle */
+  .view-toggle {
+    display: flex;
+    gap: 0;
+    padding: 4px;
+    background: var(--bg-elev);
+    border-radius: var(--r-pill);
+  }
+  .view-toggle button {
+    padding: 6px 14px;
+    border-radius: var(--r-pill);
+    font-size: var(--fs-12);
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .view-toggle button.active {
+    background: var(--surface);
+    color: var(--fg);
+    box-shadow: var(--shadow-sm);
+  }
+</style>
+</head>
+<body data-active-tab="gallery">
+
+<div class="app">
+  <header class="appbar">
+    <button class="appbar__back" data-back="../index.html" aria-label="뒤로">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </button>
+    <div class="appbar__title">사진 달력</div>
+    <button class="appbar__action" onclick="location.href='family-invite.html'" aria-label="가족 관리">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    </button>
+  </header>
+
+  <main class="main">
+
+    <div class="month-bar">
+      <button class="nav-btn" aria-label="이전 달">
+        <svg class="icon-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div class="month-bar__main">
+        <div class="month-bar__lbl">하늘이 · 생후</div>
+        <div class="month-bar__dol">D+116 ~ D+146</div>
+        <div class="month-bar__date">2026년 <strong>5월</strong> · 오늘 D+142</div>
+      </div>
+      <button class="nav-btn" aria-label="다음 달" disabled style="opacity:0.4;">
+        <svg class="icon-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+    </div>
+
+    <div class="legend-row">
+      <div>
+        <span class="num" style="color: var(--brand); font-weight: 700;">42장</span> · 이번 달
+      </div>
+      <div class="view-toggle">
+        <button class="active">출생일수</button>
+        <button>달력</button>
+        <button>마일스톤</button>
+      </div>
+    </div>
+
+    <section class="memory-strip" aria-label="추억 캐러셀">
+      <a class="memory-card mc-1" href="gallery-day.html">
+        <div class="memory-card__top">1년 전 오늘</div>
+        <div>
+          <div class="memory-card__t">처음 만난 작은 두 손</div>
+          <div class="memory-card__s">2025년 5월 18일 · 3장</div>
+        </div>
+      </a>
+      <a class="memory-card mc-2" href="gallery-day.html">
+        <div class="memory-card__top">마일스톤</div>
+        <div>
+          <div class="memory-card__t">첫 뒤집기 D+120</div>
+          <div class="memory-card__s">2026년 5월 7일</div>
+        </div>
+      </a>
+      <a class="memory-card mc-3" href="gallery-day.html">
+        <div class="memory-card__top">이번 주</div>
+        <div>
+          <div class="memory-card__t">외할머니와 첫 인사</div>
+          <div class="memory-card__s">D+141 · 14장</div>
+        </div>
+      </a>
+    </section>
+
+    <div class="week-head" aria-hidden="true">
+      <span class="sun">일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span class="sat">토</span>
+    </div>
+    <div class="cal" id="cal" role="grid" aria-label="2026년 5월 출생일수 캘린더"></div>
+
+    <section class="card" style="background: var(--c-photo-soft); border-color: transparent;">
+      <div class="row gap-3">
+        <div style="width:40px; height:40px; border-radius: var(--r-md); background: var(--c-photo); color:white; display:grid; place-items:center; flex:0 0 40px;">
+          <svg class="icon-20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 16l5-5 4 4 5-5 4 4"/><circle cx="9" cy="9" r="1.5"/></svg>
+        </div>
+        <div class="grow">
+          <div style="font-size: var(--fs-15); font-weight: 700;">사진을 업로드하면 자동 정리</div>
+          <div class="muted tiny" style="margin-top: 2px;">촬영일(EXIF) 기준으로 D+N에 자동 배치 · 중복 자동 감지</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <a class="fab" href="#" aria-label="사진 업로드">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+  </a>
+
+  <nav class="tabbar">
+    <a class="tabbar__item" data-tab="home" href="home.html"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-9 9 9M5 10v10h14V10"/></svg>홈</a>
+    <a class="tabbar__item" data-tab="log" href="log-timeline.html"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>일지</a>
+    <a class="tabbar__item tabbar__item--cry" data-tab="cry" href="cry-record.html"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>울음</a>
+    <a class="tabbar__item" data-tab="gallery" href="gallery-calendar.html"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg>갤러리</a>
+    <a class="tabbar__item" data-tab="settings" href="baby-profile.html"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 9 19.4a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.55-1H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H9a1.7 1.7 0 0 0 1-1.55V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87V9a1.7 1.7 0 0 0 1.55 1H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.55 1z"/></svg>설정</a>
+  </nav>
+</div>
+
+<script src="../js/shared.js"></script>
+<script>
+// May 2026: starts Friday (May 1), 31 days. Baby born Jan 7, 2026 → D+1 = Jan 7
+// So D+N for May K = (Jan 7 → May K) days. Jan: 25 (8..31), Feb: 28, Mar: 31, Apr: 30 = 114, then +K-1 → actually let's compute:
+// May 1, 2026 is day-of-life = 115 (Jan 7 → May 1 = 114 days). May 18 = D+132. We'll use birth = Dec 28 2025 to get D+142 on May 18 (per design copy). Either way, base = 114 for May 1.
+const MAY_START_WEEKDAY = 5; // 0=Sun, 5=Fri
+const DAYS_IN_MAY = 31;
+const APR_DAYS_SHOWN = MAY_START_WEEKDAY; // 5 trailing April cells (April 26..30) before May 1
+const BIRTH_DAY_OFFSET = 116; // May 1 = D+116 → tweak to match design copy
+const TODAY_DATE = 18;
+const PHOTOS = {
+  3: { count: 2, milestone: '', gradient: 'linear-gradient(135deg, oklch(72% 0.13 60), oklch(64% 0.14 30))' },
+  4: { count: 4, milestone: '', gradient: 'linear-gradient(135deg, oklch(62% 0.14 200), oklch(70% 0.13 240))' },
+  7: { count: 8, milestone: '🌟', gradient: 'linear-gradient(135deg, oklch(64% 0.18 25), oklch(70% 0.15 320))' },
+  9: { count: 3, milestone: '', gradient: 'linear-gradient(135deg, oklch(68% 0.13 140), oklch(72% 0.12 90))' },
+  11: { count: 5, milestone: '', gradient: 'linear-gradient(135deg, oklch(64% 0.15 350), oklch(70% 0.13 30))' },
+  14: { count: 6, milestone: '', gradient: 'linear-gradient(135deg, oklch(68% 0.14 240), oklch(72% 0.12 200))' },
+  16: { count: 2, milestone: '', gradient: 'linear-gradient(135deg, oklch(70% 0.14 90), oklch(74% 0.13 50))' },
+  17: { count: 14, milestone: '✨', gradient: 'linear-gradient(135deg, oklch(58% 0.16 295), oklch(64% 0.18 30))' },
+  18: { count: 3, milestone: '', gradient: 'linear-gradient(135deg, oklch(70% 0.15 25), oklch(72% 0.16 60))' },
+};
+
+const cal = document.getElementById('cal');
+
+// 출생일수(D+N)가 셀의 주 라벨. 달력 날짜는 좌상단 보조 태그.
+function cellTpl({ dateLabel, dateCls, dol, photo, isToday, isOutside }) {
+  const photoCls = photo ? 'has-photo' : 'empty';
+  const todayCls = isToday ? 'today' : '';
+  const outsideCls = isOutside ? 'outside' : '';
+  const photoVar = photo ? `style="--photo: ${photo.gradient};"` : '';
+  const href = photo ? 'href="gallery-day.html"' : (isOutside ? 'tabindex="-1"' : 'href="#"');
+  const count = photo && photo.count ? `<span class="count">${photo.count}</span>` : '';
+  const milestone = photo && photo.milestone ? `<span class="milestone">${photo.milestone}</span>` : '';
+  return `
+    <a class="cal__cell ${photoCls} ${todayCls} ${outsideCls}" ${href} ${photoVar}>
+      <span class="date-tag ${dateCls}">${dateLabel}</span>
+      ${count}
+      ${milestone}
+      <span class="dol-block"><span class="dol-num">${dol}</span><span class="dol-suffix">일</span></span>
+    </a>
+  `;
+}
+
+// Trailing April cells (D+111..115)
+for (let i = 0; i < APR_DAYS_SHOWN; i++) {
+  const d = 26 + i;
+  cal.insertAdjacentHTML('beforeend', cellTpl({
+    dateLabel: `4/${d}`,
+    dateCls: '',
+    dol: BIRTH_DAY_OFFSET - APR_DAYS_SHOWN + i,
+    photo: null,
+    isToday: false,
+    isOutside: true,
+  }));
+}
+
+// May cells (D+116..146)
+for (let d = 1; d <= DAYS_IN_MAY; d++) {
+  const dol = BIRTH_DAY_OFFSET + (d - 1);
+  const photo = PHOTOS[d];
+  const isToday = d === TODAY_DATE;
+  const weekday = (MAY_START_WEEKDAY + (d - 1)) % 7; // 0 = Sun
+  const dateCls = weekday === 0 ? 'sun-mark' : weekday === 6 ? 'sat-mark' : '';
+  cal.insertAdjacentHTML('beforeend', cellTpl({
+    dateLabel: `5/${d}`,
+    dateCls,
+    dol,
+    photo: photo || null,
+    isToday,
+    isOutside: false,
+  }));
+}
+
+// Fill to multiple of 7 (다음달 시작 D+147+)
+const filled = APR_DAYS_SHOWN + DAYS_IN_MAY;
+const trailing = (7 - (filled % 7)) % 7;
+for (let i = 0; i < trailing; i++) {
+  cal.insertAdjacentHTML('beforeend', cellTpl({
+    dateLabel: `6/${i + 1}`,
+    dateCls: '',
+    dol: BIRTH_DAY_OFFSET + DAYS_IN_MAY + i,
+    photo: null,
+    isToday: false,
+    isOutside: true,
+  }));
+}
+
+// view toggle visual only
+document.querySelectorAll('.view-toggle button').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.view-toggle button').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>

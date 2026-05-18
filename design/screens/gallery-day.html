@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>D+141 · 외할머니 첫 만남 — 냠냠쿨쿨</title>
+<link rel="stylesheet" href="../css/tokens.css" />
+<link rel="stylesheet" href="../css/base.css" />
+<style>
+  .day-hero {
+    padding: var(--s-2) var(--s-4) var(--s-4);
+  }
+  .day-hero .kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: var(--c-photo-soft);
+    color: var(--c-photo);
+    border-radius: var(--r-pill);
+    font-size: var(--fs-12);
+    font-weight: 700;
+  }
+  .day-hero h1 {
+    font-family: var(--font-display);
+    font-size: var(--fs-28);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    margin-top: var(--s-2);
+    line-height: 1.2;
+  }
+  .day-hero .sub {
+    color: var(--muted);
+    font-size: var(--fs-14);
+    margin-top: 4px;
+  }
+
+  /* Hero photo */
+  .hero-photo {
+    aspect-ratio: 4 / 5;
+    border-radius: var(--r-xl);
+    background:
+      linear-gradient(180deg, transparent 60%, oklch(0% 0 0 / 0.4) 100%),
+      linear-gradient(135deg, oklch(72% 0.14 30) 0%, oklch(64% 0.16 320) 100%);
+    position: relative;
+    overflow: hidden;
+    color: white;
+  }
+  .hero-photo__milestone {
+    position: absolute;
+    top: var(--s-3); left: var(--s-3);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: oklch(0% 0 0 / 0.35);
+    backdrop-filter: blur(8px);
+    border-radius: var(--r-pill);
+    font-size: var(--fs-12);
+    font-weight: 700;
+  }
+  .hero-photo__caption {
+    position: absolute;
+    bottom: var(--s-4); left: var(--s-4); right: var(--s-4);
+  }
+  .hero-photo__caption h2 {
+    font-family: var(--font-display);
+    font-size: var(--fs-20);
+    font-weight: 700;
+    line-height: 1.3;
+  }
+  .hero-photo__caption .by {
+    font-size: var(--fs-12);
+    opacity: 0.85;
+    margin-top: 4px;
+  }
+  .hero-photo__nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px; height: 36px;
+    background: oklch(0% 0 0 / 0.35);
+    backdrop-filter: blur(8px);
+    border-radius: var(--r-pill);
+    display: grid; place-items: center;
+    color: white;
+  }
+  .hero-photo__nav.left { left: var(--s-3); }
+  .hero-photo__nav.right { right: var(--s-3); }
+  .hero-photo__indicator {
+    position: absolute;
+    bottom: 12px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 6px;
+  }
+  .hero-photo__indicator span {
+    width: 18px; height: 3px; border-radius: 2px;
+    background: oklch(100% 0 0 / 0.4);
+  }
+  .hero-photo__indicator span.active { background: white; width: 26px; }
+
+  .reactions {
+    display: flex;
+    gap: var(--s-2);
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .reaction {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-pill);
+    font-size: var(--fs-13);
+    font-weight: 600;
+  }
+  .reaction.mine { background: var(--c-photo-soft); border-color: transparent; color: var(--c-photo); }
+  .reaction .heart { color: var(--c-cry); }
+
+  .photos-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+  .photos-grid > div {
+    aspect-ratio: 1;
+    border-radius: var(--r-md);
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    cursor: pointer;
+  }
+  .photos-grid > div.video::after {
+    content: '';
+    position: absolute;
+    bottom: 6px; right: 6px;
+    width: 16px; height: 16px;
+    background: oklch(0% 0 0 / 0.4);
+    border-radius: 4px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M8 5v14l11-7z'/%3E%3C/svg%3E");
+    background-size: 12px;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+  .photos-grid > div.has-count::before {
+    content: attr(data-count);
+    position: absolute;
+    inset: 0;
+    background: oklch(0% 0 0 / 0.5);
+    color: white;
+    border-radius: inherit;
+    display: grid;
+    place-items: center;
+    font-size: var(--fs-18);
+    font-weight: 700;
+  }
+
+  .related-card {
+    display: flex;
+    gap: var(--s-3);
+    padding: var(--s-3);
+    background: var(--bg-elev);
+    border-radius: var(--r-md);
+    align-items: center;
+  }
+  .related-card__icon {
+    width: 36px; height: 36px;
+    border-radius: var(--r-md);
+    background: var(--surface);
+    display: grid; place-items: center;
+    color: var(--brand);
+    flex: 0 0 auto;
+  }
+  .related-card__t { font-size: var(--fs-14); font-weight: 700; }
+  .related-card__s { font-size: var(--fs-12); color: var(--muted); margin-top: 2px; }
+</style>
+</head>
+<body data-active-tab="gallery">
+
+<div class="app">
+  <header class="appbar">
+    <button class="appbar__back" data-back="gallery-calendar.html" aria-label="뒤로">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </button>
+    <div class="appbar__title">하루 사진</div>
+    <button class="appbar__action" aria-label="공유">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
+    </button>
+  </header>
+
+  <main class="main">
+
+    <div class="day-hero">
+      <span class="kicker">D+141 · 생후 4개월 22일</span>
+      <h1>외할머니와 첫 인사</h1>
+      <div class="sub">2026년 5월 17일 토요일 · 14장 (사진 12 · 영상 2)</div>
+    </div>
+
+    <section class="hero-photo">
+      <div class="hero-photo__milestone">
+        <svg class="icon-16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-5.5 4.5 2 7L12 16l-6.5 4.5 2-7L2 9h7z"/></svg>
+        마일스톤 · 외할머니 첫 만남
+      </div>
+      <button class="hero-photo__nav left" aria-label="이전">
+        <svg class="icon-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <button class="hero-photo__nav right" aria-label="다음">
+        <svg class="icon-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+      <div class="hero-photo__caption">
+        <h2>"외할머니랑 눈 마주치는 거 너무 좋아해요"</h2>
+        <div class="by">지영 엄마가 추가 · 14:23</div>
+      </div>
+      <div class="hero-photo__indicator">
+        <span class="active"></span><span></span><span></span><span></span><span></span>
+      </div>
+    </section>
+
+    <div class="reactions">
+      <button class="reaction mine">
+        <span class="heart">♥</span> 8
+      </button>
+      <button class="reaction">
+        <svg class="icon-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg> 3
+      </button>
+      <button class="reaction">
+        <svg class="icon-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+        저장
+      </button>
+      <div class="grow"></div>
+      <span class="muted tiny">민수 아빠 · 영자 외할머니 외 1명</span>
+    </div>
+
+    <section>
+      <div class="section-title"><span>전체 사진 · 14장</span><span class="link">선택</span></div>
+      <div class="photos-grid" style="margin-top: var(--s-2);">
+        <div style="background: linear-gradient(135deg, oklch(72% 0.14 30), oklch(64% 0.16 320));"></div>
+        <div style="background: linear-gradient(135deg, oklch(68% 0.13 60), oklch(72% 0.13 30));"></div>
+        <div style="background: linear-gradient(135deg, oklch(64% 0.14 200), oklch(72% 0.12 240));"></div>
+        <div class="video" style="background: linear-gradient(135deg, oklch(62% 0.15 350), oklch(70% 0.13 30));"></div>
+        <div style="background: linear-gradient(135deg, oklch(70% 0.14 90), oklch(74% 0.13 50));"></div>
+        <div style="background: linear-gradient(135deg, oklch(66% 0.14 295), oklch(62% 0.13 265));"></div>
+        <div style="background: linear-gradient(135deg, oklch(68% 0.13 140), oklch(74% 0.12 90));"></div>
+        <div style="background: linear-gradient(135deg, oklch(72% 0.13 60), oklch(64% 0.14 30));"></div>
+        <div class="has-count" data-count="+6" style="background: linear-gradient(135deg, oklch(64% 0.14 200), oklch(72% 0.12 240));"></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title"><span>마일스톤 태그</span><span class="link">+ 추가</span></div>
+      <div class="row gap-2" style="flex-wrap: wrap; margin-top: var(--s-2);">
+        <span class="pill" style="background: var(--c-photo-soft); color: var(--c-photo);">외할머니 첫 만남</span>
+        <span class="pill">웃음 짓기</span>
+        <span class="pill">옹알이 시작</span>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title"><span>이 날의 일지와 연결</span></div>
+      <div class="col" style="margin-top: var(--s-2);">
+        <div class="related-card">
+          <div class="related-card__icon" style="color: var(--c-feed);">
+            <svg class="icon-20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v6c0 2 1 4 4 4s4-2 4-4V2"/><path d="M12 12v10"/></svg>
+          </div>
+          <div class="grow">
+            <div class="related-card__t">수유 5회 · 총 540ml</div>
+            <div class="related-card__s">평소보다 80ml 많이 먹은 날</div>
+          </div>
+          <svg class="icon-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--muted);"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+        <div class="related-card">
+          <div class="related-card__icon" style="color: var(--c-sleep);">
+            <svg class="icon-20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </div>
+          <div class="grow">
+            <div class="related-card__t">총 수면 14시간</div>
+            <div class="related-card__s">밤잠 안정적 · 평균 대비 +1.2h</div>
+          </div>
+          <svg class="icon-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--muted);"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="tabbar">
+    <a class="tabbar__item" data-tab="home" href="home.html"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-9 9 9M5 10v10h14V10"/></svg>홈</a>
+    <a class="tabbar__item" data-tab="log" href="log-timeline.html"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>일지</a>
+    <a class="tabbar__item tabbar__item--cry" data-tab="cry" href="cry-record.html"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>울음</a>
+    <a class="tabbar__item" data-tab="gallery" href="gallery-calendar.html"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg>갤러리</a>
+    <a class="tabbar__item" data-tab="settings" href="baby-profile.html"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 9 19.4a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.55-1H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H9a1.7 1.7 0 0 0 1-1.55V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87V9a1.7 1.7 0 0 0 1.55 1H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.55 1z"/></svg>설정</a>
+  </nav>
+</div>
+
+<script src="../js/shared.js"></script>
+</body>
+</html>

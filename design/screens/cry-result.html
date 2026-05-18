@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>분석 결과 — 냠냠쿨쿨</title>
+<link rel="stylesheet" href="../css/tokens.css" />
+<link rel="stylesheet" href="../css/base.css" />
+<style>
+  .result-hero {
+    background:
+      radial-gradient(80% 60% at 0% 0%, var(--c-cry-soft) 0%, transparent 60%),
+      var(--bg);
+    padding: var(--s-2) var(--s-4) var(--s-5);
+  }
+  .verdict {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .verdict__meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--fs-13);
+    color: var(--muted);
+  }
+  .confidence-bar {
+    height: 4px;
+    width: 56px;
+    background: var(--bg-elev);
+    border-radius: var(--r-pill);
+    overflow: hidden;
+  }
+  .confidence-bar > span {
+    display: block;
+    height: 100%;
+    background: var(--c-cry);
+    border-radius: inherit;
+  }
+  .verdict__title {
+    font-family: var(--font-display);
+    font-size: var(--fs-32);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    color: var(--fg-strong);
+    line-height: 1.1;
+  }
+  .verdict__title .pct {
+    font-variant-numeric: tabular-nums;
+    color: var(--c-cry);
+  }
+  .verdict__reason {
+    color: var(--muted);
+    font-size: var(--fs-15);
+    line-height: 1.55;
+    margin-top: var(--s-3);
+    max-width: 36ch;
+  }
+
+  .reco-card {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    padding: var(--s-4);
+    background: var(--c-feed-soft);
+    border-radius: var(--r-lg);
+    color: var(--c-feed);
+    border: 1px solid var(--border);
+    border-color: transparent;
+  }
+  .reco-card__icon {
+    width: 48px; height: 48px;
+    border-radius: var(--r-md);
+    background: var(--c-feed);
+    color: white;
+    display: grid; place-items: center;
+    flex: 0 0 auto;
+  }
+  .reco-card__body { flex: 1; color: var(--fg-strong); }
+  .reco-card__lbl { font-size: var(--fs-12); font-weight: 700; color: var(--c-feed); text-transform: uppercase; letter-spacing: 0.04em; }
+  .reco-card__t { font-size: var(--fs-17); font-weight: 700; margin-top: 2px; letter-spacing: -0.01em; }
+  .reco-card__s { font-size: var(--fs-13); color: var(--muted); margin-top: 4px; }
+
+  .other-cause {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-1);
+    padding: var(--s-3) var(--s-4);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+  }
+  .other-cause__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-3);
+  }
+  .other-cause__t {
+    font-size: var(--fs-15);
+    font-weight: 700;
+  }
+  .other-cause__s {
+    font-size: var(--fs-13);
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .other-cause__rank {
+    font-family: var(--font-mono);
+    font-size: var(--fs-12);
+    color: var(--muted);
+    font-weight: 700;
+    background: var(--bg-elev);
+    padding: 2px 8px;
+    border-radius: var(--r-pill);
+  }
+
+  .context-strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--s-2);
+  }
+  .context-strip > div {
+    padding: var(--s-3);
+    border-radius: var(--r-md);
+    background: var(--surface);
+    border: 1px solid var(--border);
+  }
+  .context-strip__l { font-size: var(--fs-11); color: var(--muted); font-weight: 600; }
+  .context-strip__v { font-size: var(--fs-15); font-weight: 700; margin-top: 2px; }
+  .context-strip__s { font-size: var(--fs-11); color: var(--muted); margin-top: 2px; }
+
+  .footer-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-2);
+  }
+  .provider-tag {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: var(--fs-12);
+    color: var(--muted);
+    margin-top: var(--s-3);
+  }
+  .provider-tag::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--success);
+  }
+
+  .feedback-row {
+    display: flex;
+    justify-content: center;
+    gap: var(--s-3);
+    padding: var(--s-3) 0;
+  }
+  .feedback-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 14px;
+    border-radius: var(--r-pill);
+    background: var(--bg-elev);
+    color: var(--muted);
+    font-size: var(--fs-13);
+    font-weight: 600;
+    transition: all var(--transition);
+  }
+  .feedback-btn:hover { background: var(--border); color: var(--fg); }
+  .feedback-btn.active { background: var(--c-tip-soft); color: var(--c-tip); }
+</style>
+</head>
+<body data-active-tab="cry">
+
+<div class="app">
+  <header class="appbar">
+    <button class="appbar__back" data-back="cry-record.html" aria-label="뒤로">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </button>
+    <div class="appbar__title">분석 결과</div>
+    <button class="appbar__action" aria-label="다시 분석" title="다시 분석">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7M21 3v6h-6"/></svg>
+    </button>
+  </header>
+
+  <main class="main" style="padding-top: 0; gap: var(--s-5);">
+
+    <section class="result-hero">
+      <div class="verdict">
+        <div class="verdict__meta">
+          <span>1순위 · 신뢰도</span>
+          <span class="confidence-bar" aria-hidden="true"><span style="width: 78%;"></span></span>
+          <span class="num" style="font-weight:700; color: var(--c-cry);">78%</span>
+        </div>
+        <h1 class="verdict__title"><span class="pct">배고픔</span></h1>
+        <p class="verdict__reason">
+          마지막 수유로부터 <strong>2시간 35분</strong>이 지났어요.
+          평소 이 시간대 수유 간격(평균 2시간 10분)을 넘었고,
+          울음 패턴이 <em>짧게 반복</em>되는 모양이라 배고픔 신호와 일치합니다.
+        </p>
+      </div>
+    </section>
+
+    <section class="reco-card tone-feed">
+      <div class="reco-card__icon">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v6c0 2 1 4 4 4s4-2 4-4V2"/><path d="M12 12v10"/></svg>
+      </div>
+      <div class="reco-card__body">
+        <div class="reco-card__lbl">권장 행동</div>
+        <div class="reco-card__t">분유 90~120ml 수유 준비</div>
+        <div class="reco-card__s">5월 18일 14:23 기준 · 누적 패턴 평균</div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title">
+        <span>다른 가능성</span>
+      </div>
+      <div class="col" style="margin-top: var(--s-2);">
+        <div class="other-cause">
+          <div class="other-cause__head">
+            <div>
+              <div class="other-cause__t">불편함 · 14%</div>
+              <div class="other-cause__s">기저귀 마지막 확인 4시간 전</div>
+            </div>
+            <span class="other-cause__rank">2순위</span>
+          </div>
+        </div>
+        <div class="other-cause">
+          <div class="other-cause__head">
+            <div>
+              <div class="other-cause__t">졸림 · 8%</div>
+              <div class="other-cause__s">마지막 낮잠 후 4시간 30분 깨어 있음</div>
+            </div>
+            <span class="other-cause__rank">3순위</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title">
+        <span>지금까지의 컨텍스트</span>
+        <a class="link" href="log-timeline.html">전체 일지</a>
+      </div>
+      <div class="context-strip" style="margin-top: var(--s-2);">
+        <div>
+          <div class="context-strip__l">마지막 수유</div>
+          <div class="context-strip__v num">11:48</div>
+          <div class="context-strip__s">분유 100ml · 2시간 35분 전</div>
+        </div>
+        <div>
+          <div class="context-strip__l">마지막 수면</div>
+          <div class="context-strip__v num">09:00</div>
+          <div class="context-strip__s">1시간 20분 · 낮잠</div>
+        </div>
+        <div>
+          <div class="context-strip__l">마지막 배변</div>
+          <div class="context-strip__v num">10:15</div>
+          <div class="context-strip__s">소변 · 4시간 8분 전</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="footer-actions">
+      <button class="btn btn--primary btn--lg btn--block" onclick="location.href='log-add.html'">
+        <svg class="icon-20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+        수유 기록 바로 추가
+      </button>
+      <button class="btn btn--outline btn--block" onclick="location.href='cry-record.html'">다시 녹음</button>
+
+      <div class="feedback-row">
+        <button class="feedback-btn" id="fb-up">
+          <svg class="icon-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 22V11M2 13l1-6h6V3l3 3 3-3v4h6l-2 11H7"/></svg>
+          도움 됐어요
+        </button>
+        <button class="feedback-btn" id="fb-down">
+          <svg class="icon-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2v11M22 11l-1 6h-6v4l-3-3-3 3v-4H3l2-11h12"/></svg>
+          별로였어요
+        </button>
+      </div>
+
+      <div class="provider-tag">분석 · Gemini 2.5 Flash · 4.2초</div>
+
+      <div class="disclaimer" role="note">
+        <svg class="disclaimer__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+        <span>
+          <strong>의료 조언이 아닙니다.</strong> 본 분석은 AI 기반 참고용 추정이며 진단·처방을 대체할 수 없습니다.
+          울음이 1시간 이상 지속되거나 발열·구토·호흡 곤란 등 이상 징후가 동반되면 즉시 소아과 또는 119 상담을 권장합니다.
+        </span>
+      </div>
+    </section>
+  </main>
+
+  <nav class="tabbar">
+    <a class="tabbar__item" data-tab="home" href="home.html">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-9 9 9M5 10v10h14V10"/></svg>홈
+    </a>
+    <a class="tabbar__item" data-tab="log" href="log-timeline.html">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>일지
+    </a>
+    <a class="tabbar__item tabbar__item--cry" data-tab="cry" href="cry-record.html">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>울음
+    </a>
+    <a class="tabbar__item" data-tab="gallery" href="gallery-calendar.html">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg>갤러리
+    </a>
+    <a class="tabbar__item" data-tab="settings" href="baby-profile.html">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 9 19.4a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.55-1H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H9a1.7 1.7 0 0 0 1-1.55V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87V9a1.7 1.7 0 0 0 1.55 1H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.55 1z"/></svg>설정
+    </a>
+  </nav>
+</div>
+
+<script src="../js/shared.js"></script>
+<script>
+  document.getElementById('fb-up').addEventListener('click', e => {
+    document.querySelectorAll('.feedback-btn').forEach(b => b.classList.remove('active'));
+    e.currentTarget.classList.add('active');
+  });
+  document.getElementById('fb-down').addEventListener('click', e => {
+    document.querySelectorAll('.feedback-btn').forEach(b => b.classList.remove('active'));
+    e.currentTarget.classList.add('active');
+  });
+</script>
+</body>
+</html>
