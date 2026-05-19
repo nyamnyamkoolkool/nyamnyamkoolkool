@@ -4,6 +4,8 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>냠냠쿨쿨 — 디자인</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+<link rel="apple-touch-icon" href="assets/icon.svg" />
 <link rel="stylesheet" href="css/tokens.css" />
 <link rel="stylesheet" href="css/base.css" />
 <style>
@@ -35,14 +37,9 @@
     letter-spacing: -0.01em;
   }
   .brand-mark {
-    width: 40px; height: 40px;
-    border-radius: 12px;
-    background: var(--brand);
-    display: grid; place-items: center;
-    color: white;
-    font-weight: 800;
-    font-size: 18px;
-    letter-spacing: -0.02em;
+    width: 44px; height: 44px;
+    display: block;
+    flex: 0 0 auto;
   }
   .brand small {
     display: block;
@@ -277,13 +274,21 @@
 
   <header class="hub-bar">
     <div class="brand">
-      <div class="brand-mark">냠</div>
+      <img class="brand-mark" src="assets/icon.svg" alt="냠냠쿨쿨" width="44" height="44" />
       <div>
         <div>냠냠쿨쿨</div>
         <small>AI 육아 보조 · 디자인 시스템 v0.2</small>
       </div>
     </div>
     <div class="hub-actions">
+      <a class="hub-btn" href="brand.html">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 10c.5-1.5 2-2 3-2s3 .8 3 2.5c0 2-3 2.5-3 4"/><circle cx="12" cy="17" r=".5" fill="currentColor"/></svg>
+        브랜드 가이드
+      </a>
+      <a class="hub-btn" href="brand-variants.html">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        로고 시안 비교
+      </a>
       <a class="hub-btn" href="screens/home.html">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-9 9 9M5 10v10h14V10"/></svg>
         앱 미리보기

@@ -1,0 +1,762 @@
+<!doctype html>
+<html lang="ko" class="theme-light" style="color-scheme: light;">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>브랜드 — 냠냠쿨쿨</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+<link rel="apple-touch-icon" href="assets/icon.svg" />
+<link rel="stylesheet" href="css/tokens.css" />
+<link rel="stylesheet" href="css/base.css" />
+<style>
+  html, body { background: #fafaf9; color: oklch(20% 0.018 250); }
+  body { padding: 0; }
+
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 32px 28px 96px; }
+
+  /* ── Topbar ───────────────────────────────────────────── */
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 40px;
+  }
+  .topbar a.back {
+    height: 36px; padding: 0 14px 0 10px;
+    border-radius: 999px;
+    background: white;
+    border: 1px solid oklch(91% 0.006 240);
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 13px; font-weight: 600;
+    color: oklch(35% 0.012 250);
+    text-decoration: none;
+  }
+  .topbar a.back:hover { border-color: oklch(75% 0.008 240); color: oklch(20% 0.018 250); }
+  .topbar .crumb {
+    font-size: 12px; font-weight: 600; letter-spacing: 0.04em;
+    color: oklch(55% 0.012 250); text-transform: uppercase;
+  }
+
+  /* ── Hero ────────────────────────────────────────────── */
+  .hero {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 56px;
+    align-items: center;
+    padding: 40px 0 56px;
+    border-bottom: 1px solid oklch(92% 0.005 240);
+    margin-bottom: 64px;
+  }
+  .hero-icon {
+    width: 240px; height: 240px;
+    border-radius: 56px;
+    box-shadow: 0 20px 50px -20px oklch(64% 0.17 30 / 0.45), 0 6px 14px -6px oklch(20% 0.018 250 / 0.12);
+  }
+  .hero-text h1 {
+    font-size: clamp(32px, 4vw, 44px);
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    font-weight: 700;
+    margin: 0 0 16px;
+    text-wrap: balance;
+    color: oklch(15% 0.018 250);
+  }
+  .hero-text h1 .eat { color: #E1684A; }
+  .hero-text h1 .sleep { color: #4B66AE; }
+  .hero-text p {
+    color: oklch(40% 0.012 250);
+    font-size: 15.5px;
+    line-height: 1.65;
+    max-width: 56ch;
+    margin: 0 0 20px;
+  }
+  .tags { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    height: 30px; padding: 0 12px;
+    border-radius: 999px;
+    background: white;
+    border: 1px solid oklch(91% 0.006 240);
+    font-size: 12.5px;
+    font-weight: 600;
+    color: oklch(35% 0.012 250);
+  }
+  .tag .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--c, var(--brand)); }
+
+  .variants-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 18px 12px 14px;
+    margin-top: 22px;
+    border-radius: 999px;
+    background: var(--brand);
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: -0.005em;
+    box-shadow: 0 10px 24px -10px oklch(64% 0.17 30 / 0.55), 0 2px 6px -2px oklch(20% 0.018 250 / 0.12);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+  .variants-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px -10px oklch(64% 0.17 30 / 0.65), 0 4px 10px -2px oklch(20% 0.018 250 / 0.16);
+  }
+  .variants-cta__icon {
+    display: inline-grid;
+    place-items: center;
+    width: 26px; height: 26px;
+    border-radius: 8px;
+    background: oklch(100% 0 0 / 0.18);
+  }
+  .variants-cta small {
+    font-size: 12.5px;
+    font-weight: 500;
+    opacity: 0.85;
+    letter-spacing: 0;
+  }
+  .variants-cta__arrow {
+    display: inline-grid;
+    place-items: center;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: oklch(100% 0 0 / 0.22);
+    font-size: 12px;
+    margin-left: 2px;
+  }
+
+  @media (max-width: 760px) {
+    .hero { grid-template-columns: 1fr; gap: 28px; text-align: left; padding-top: 16px; padding-bottom: 32px; margin-bottom: 40px; }
+    .hero-icon { width: 168px; height: 168px; border-radius: 38px; }
+  }
+
+  /* ── Section heads ──────────────────────────────────── */
+  .sec { margin-top: 72px; }
+  .sec-head {
+    display: flex; align-items: baseline; gap: 16px;
+    margin-bottom: 24px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid oklch(94% 0.005 240);
+  }
+  .sec-num {
+    font-family: var(--font-mono);
+    font-size: 11px; font-weight: 700;
+    color: var(--brand);
+    letter-spacing: 0.08em;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: oklch(96% 0.025 30);
+  }
+  .sec-title { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; color: oklch(15% 0.018 250); }
+  .sec-desc { color: oklch(50% 0.014 250); font-size: 13.5px; margin-left: auto; }
+  @media (max-width: 640px) { .sec-desc { display: none; } }
+
+  /* ── Mark sizes ─────────────────────────────────────── */
+  .sizes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+  }
+  .size-card {
+    background: white;
+    border: 1px solid oklch(92% 0.005 240);
+    border-radius: 18px;
+    padding: 24px 16px 18px;
+    text-align: center;
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+  }
+  .size-card .icon-wrap {
+    flex: 1;
+    display: grid; place-items: center;
+    width: 100%;
+    min-height: 168px;
+  }
+  .size-card.shrink .icon-wrap { min-height: 120px; }
+  .size-label {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: oklch(45% 0.012 250);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .size-label small { display: block; font-weight: 500; color: oklch(60% 0.012 250); letter-spacing: 0; margin-top: 2px; text-transform: none; }
+  .size-card img { display: block; }
+
+  .home-mock {
+    background: white;
+    border: 1px solid oklch(92% 0.005 240);
+    border-radius: 22px;
+    padding: 32px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    margin-top: 16px;
+  }
+  @media (max-width: 760px) { .home-mock { grid-template-columns: 1fr; } }
+  .device {
+    aspect-ratio: 9 / 16;
+    border-radius: 36px;
+    padding: 18px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    align-content: start;
+    position: relative;
+    overflow: hidden;
+    max-width: 380px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  .device.ios {
+    background:
+      radial-gradient(80% 60% at 20% 10%, oklch(78% 0.10 240) 0%, transparent 60%),
+      radial-gradient(80% 60% at 80% 90%, oklch(72% 0.12 30) 0%, transparent 60%),
+      oklch(68% 0.11 285);
+  }
+  .device.android {
+    background:
+      radial-gradient(80% 50% at 80% 10%, oklch(72% 0.13 145) 0%, transparent 60%),
+      radial-gradient(60% 60% at 20% 90%, oklch(74% 0.10 200) 0%, transparent 60%),
+      oklch(20% 0.02 250);
+  }
+  .device::before {
+    content: '';
+    position: absolute;
+    top: 8px; left: 50%;
+    transform: translateX(-50%);
+    width: 36%; height: 4px;
+    border-radius: 999px;
+    background: oklch(100% 0 0 / 0.55);
+  }
+  .device.android::before { background: oklch(100% 0 0 / 0.3); }
+  .device .app {
+    aspect-ratio: 1;
+    border-radius: 16px;
+    background: oklch(100% 0 0 / 0.18);
+    backdrop-filter: blur(4px);
+  }
+  .device .app.real {
+    background: transparent;
+    padding: 0;
+  }
+  .device .app.real img { width: 100%; height: 100%; border-radius: 16px; display: block; }
+  .device .app.real.android img { border-radius: 50%; }
+  .device-cap {
+    text-align: center;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: oklch(50% 0.014 250);
+    margin-top: 14px;
+  }
+
+  /* ── Logo lockups ───────────────────────────────────── */
+  .logo-grid {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 760px) { .logo-grid { grid-template-columns: 1fr; } }
+  .logo-card {
+    background: white;
+    border: 1px solid oklch(92% 0.005 240);
+    border-radius: 18px;
+    padding: 36px 28px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: 200px;
+    gap: 18px;
+  }
+  .logo-card.dark { background: oklch(20% 0.018 250); border-color: oklch(28% 0.018 250); }
+  .logo-card.brand { background: var(--brand); border-color: var(--brand); }
+  .logo-card img { display: block; max-width: 100%; height: auto; }
+  .logo-card-cap {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: oklch(45% 0.012 250);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .logo-card.dark .logo-card-cap { color: oklch(70% 0.014 250); }
+  .logo-card.brand .logo-card-cap { color: white; opacity: 0.85; }
+
+  /* ── Colors ─────────────────────────────────────────── */
+  .color-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
+  }
+  .color {
+    background: white;
+    border: 1px solid oklch(92% 0.005 240);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .color .swatch { height: 100px; }
+  .color .meta { padding: 12px 14px 14px; }
+  .color .name { font-size: 13px; font-weight: 700; color: oklch(15% 0.018 250); }
+  .color .role { font-size: 11.5px; color: oklch(55% 0.012 250); margin-top: 2px; }
+  .color .hex {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: oklch(40% 0.012 250);
+    margin-top: 8px;
+    letter-spacing: 0;
+  }
+
+  /* ── DO / DON'T ─────────────────────────────────────── */
+  .rules {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 720px) { .rules { grid-template-columns: 1fr; } }
+  .rule-col {
+    background: white;
+    border: 1px solid oklch(92% 0.005 240);
+    border-radius: 18px;
+    padding: 22px 22px 24px;
+  }
+  .rule-col h3 {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin: 0 0 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .rule-col.do h3 { color: oklch(48% 0.16 155); }
+  .rule-col.dont h3 { color: oklch(50% 0.18 25); }
+  .rule-col h3 .pill {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    display: grid; place-items: center;
+    color: white;
+    font-size: 13px;
+    font-weight: 800;
+  }
+  .rule-col.do h3 .pill { background: oklch(58% 0.15 155); }
+  .rule-col.dont h3 .pill { background: oklch(58% 0.18 25); }
+  .rule-col ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
+  .rule-col li {
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: oklch(28% 0.012 250);
+    padding-left: 18px;
+    position: relative;
+  }
+  .rule-col li::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 8px;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+  }
+  .rule-col.do li::before { background: oklch(58% 0.15 155); }
+  .rule-col.dont li::before { background: oklch(58% 0.18 25); }
+
+  /* ── Download ──────────────────────────────────────── */
+  .files {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+  }
+  .file {
+    background: white;
+    border: 1px solid oklch(92% 0.005 240);
+    border-radius: 14px;
+    padding: 14px 16px;
+    display: flex; align-items: center; gap: 12px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.15s ease, transform 0.15s ease;
+  }
+  .file:hover { border-color: oklch(72% 0.16 30 / 0.5); transform: translateY(-1px); }
+  .file .ic {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    overflow: hidden;
+    flex: 0 0 auto;
+    display: grid; place-items: center;
+    background: oklch(96% 0.005 240);
+  }
+  .file .ic img { width: 100%; height: 100%; display: block; }
+  .file .nm { font-size: 13px; font-weight: 700; color: oklch(15% 0.018 250); }
+  .file .pt { font-family: var(--font-mono); font-size: 11px; color: oklch(55% 0.012 250); margin-top: 2px; }
+  .file .arrow {
+    margin-left: auto;
+    color: oklch(55% 0.012 250);
+    font-size: 16px;
+  }
+
+  /* ── Concept callout ──────────────────────────────── */
+  .concept {
+    background: linear-gradient(140deg, oklch(96% 0.025 30) 0%, oklch(96% 0.022 295) 100%);
+    border: 1px solid oklch(92% 0.025 30);
+    border-radius: 22px;
+    padding: 32px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 28px;
+    align-items: center;
+    margin-top: 16px;
+  }
+  @media (max-width: 720px) { .concept { grid-template-columns: 1fr; padding: 24px; gap: 18px; } }
+  .concept svg { width: 120px; height: 120px; display: block; }
+  .concept h3 { font-size: 18px; font-weight: 700; letter-spacing: -0.015em; margin: 0 0 8px; }
+  .concept p { font-size: 14px; line-height: 1.65; color: oklch(28% 0.012 250); margin: 0; max-width: 60ch; }
+  .concept .pair { display: inline-flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .concept .pair span { font-size: 12.5px; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: white; }
+  .concept .pair span.eat { color: #C25738; border: 1px solid oklch(82% 0.10 30); }
+  .concept .pair span.sleep { color: #3C5294; border: 1px solid oklch(82% 0.08 265); }
+
+  footer {
+    margin-top: 80px;
+    padding-top: 22px;
+    border-top: 1px solid oklch(92% 0.005 240);
+    color: oklch(50% 0.014 250);
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  footer code {
+    font-family: var(--font-mono);
+    padding: 2px 6px;
+    background: oklch(96% 0.005 240);
+    border-radius: 4px;
+    color: oklch(25% 0.018 250);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="topbar">
+    <a class="back" href="index.html">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      디자인 허브
+    </a>
+    <div class="crumb">Brand · v0.1</div>
+  </header>
+
+  <!-- HERO ─────────────────────────────────────────── -->
+  <section class="hero">
+    <img class="hero-icon" src="assets/icon.svg" alt="냠냠쿨쿨 앱 아이콘" />
+    <div class="hero-text">
+      <h1>잘 <span class="eat">먹고</span>, 잘 <span class="sleep">자는</span><br/>다정한 동행.</h1>
+      <p>
+        냠냠쿨쿨의 마크는 둥근 얼굴에 감긴 미소 눈과 살짝 웃는 입꼬리 하나로
+        <strong>"방금 잘 먹은 만족"</strong>과 <strong>"포근하게 잠든 평온함"</strong>을
+        동시에 담습니다. 16px 파비콘부터 1024px 앱 아이콘까지 같은 표정으로 살아남도록 설계됐어요.
+      </p>
+      <div class="tags">
+        <span class="tag"><span class="dot" style="--c: #E97A5C;"></span>Warm coral · 따뜻함</span>
+        <span class="tag"><span class="dot" style="--c: #4B66AE;"></span>Quiet indigo · 차분함</span>
+        <span class="tag"><span class="dot" style="--c: #FFF1E6;"></span>Soft cream · 포근함</span>
+      </div>
+      <a class="variants-cta" href="brand-variants.html">
+        <span class="variants-cta__icon" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        </span>
+        다른 시안 비교 보기
+        <small>— 결이 다른 4가지 후보</small>
+        <span class="variants-cta__arrow">→</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- CONCEPT ──────────────────────────────────────── -->
+  <section class="sec">
+    <div class="sec-head">
+      <span class="sec-num">CONCEPT</span>
+      <span class="sec-title">디자인 컨셉</span>
+      <span class="sec-desc">하나의 표정이 두 메시지를 전한다</span>
+    </div>
+    <div class="concept">
+      <img src="assets/icon.svg" alt="" width="120" height="120" style="border-radius: 26px;" />
+      <div>
+        <h3>"감긴 눈은 잠, 웃는 입은 만족"</h3>
+        <p>
+          위로 휘는 두 눈썹 모양의 감긴 눈은 동아시아 시각 문화에서 <em>행복하게 잠든 표정</em>으로 읽힙니다.
+          작은 입꼬리는 방금 잘 먹은 아기의 만족스러운 표정. 발그레한 두 볼은 건강함.
+          별도의 달이나 zZ, 우유병 같은 요소를 추가하지 않은 이유는 — 얼굴 하나로 양쪽 의미를 모두 담을 때
+          가장 절제되고, 가장 작은 크기에서도 살아남기 때문입니다.
+        </p>
+        <div class="pair">
+          <span class="eat">냠냠 · 잘 먹는다</span>
+          <span class="sleep">쿨쿨 · 잘 잔다</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARK SIZES ──────────────────────────────────── -->
+  <section class="sec">
+    <div class="sec-head">
+      <span class="sec-num">MARK</span>
+      <span class="sec-title">앱 아이콘 — 크기 검증</span>
+      <span class="sec-desc">16px 파비콘부터 1024px 앱 아이콘까지 같은 표정 유지</span>
+    </div>
+    <div class="sizes-grid">
+      <div class="size-card">
+        <div class="icon-wrap"><img src="assets/icon.svg" width="168" height="168" alt="" /></div>
+        <div class="size-label">1024 / 512<small>App store · Play store</small></div>
+      </div>
+      <div class="size-card">
+        <div class="icon-wrap"><img src="assets/icon.svg" width="120" height="120" alt="" /></div>
+        <div class="size-label">180<small>iOS apple-touch-icon</small></div>
+      </div>
+      <div class="size-card">
+        <div class="icon-wrap"><img src="assets/icon.svg" width="64" height="64" alt="" /></div>
+        <div class="size-label">64<small>홈 화면 · 알림</small></div>
+      </div>
+      <div class="size-card shrink">
+        <div class="icon-wrap"><img src="assets/favicon.svg" width="32" height="32" alt="" /></div>
+        <div class="size-label">32<small>브라우저 탭</small></div>
+      </div>
+      <div class="size-card shrink">
+        <div class="icon-wrap"><img src="assets/favicon.svg" width="16" height="16" alt="" /></div>
+        <div class="size-label">16<small>최소 파비콘</small></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ON DEVICE ───────────────────────────────────── -->
+  <section class="sec">
+    <div class="sec-head">
+      <span class="sec-num">DEVICE</span>
+      <span class="sec-title">홈 화면에서</span>
+      <span class="sec-desc">iOS · Android 홈 화면 미리보기</span>
+    </div>
+    <div class="home-mock">
+      <div>
+        <div class="device ios" aria-label="iOS 홈 화면 미리보기">
+          <div class="app"></div>
+          <div class="app"></div>
+          <div class="app real"><img src="assets/icon.svg" alt="냠냠쿨쿨" /></div>
+          <div class="app"></div>
+          <div class="app"></div>
+          <div class="app"></div>
+          <div class="app"></div>
+          <div class="app"></div>
+          <div class="app"></div>
+          <div class="app"></div>
+          <div class="app"></div>
+          <div class="app"></div>
+        </div>
+        <div class="device-cap">iOS · 18% squircle 라운드</div>
+      </div>
+      <div>
+        <div class="device android" aria-label="Android 홈 화면 미리보기">
+          <div class="app"></div>
+          <div class="app"></div>
+          <div class="app"></div>
+          <div class="app"></div>
+          <div class="app real android"><img src="assets/icon.svg" alt="냠냠쿨쿨" /></div>
+          <div class="app"></div>
+          <div class="app"></div>
+          <div class="app"></div>
+          <div class="app"></div>
+          <div class="app"></div>
+          <div class="app"></div>
+          <div class="app"></div>
+        </div>
+        <div class="device-cap">Android · 원형 마스크 (Material You)</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LOGO LOCKUPS ────────────────────────────────── -->
+  <section class="sec">
+    <div class="sec-head">
+      <span class="sec-num">LOGO</span>
+      <span class="sec-title">로고 — 마크 + 워드마크</span>
+      <span class="sec-desc">냠냠 = 코랄(먹는 따뜻함) · 쿨쿨 = 인디고(자는 차분함)</span>
+    </div>
+    <div class="logo-grid">
+      <div class="logo-card">
+        <img src="assets/logo.svg" alt="냠냠쿨쿨 가로 로고" style="width: 320px;" />
+        <div class="logo-card-cap">가로 · Primary</div>
+      </div>
+      <div class="logo-card">
+        <img src="assets/logo-stacked.svg" alt="냠냠쿨쿨 세로 로고" style="width: 160px;" />
+        <div class="logo-card-cap">세로 · Profile · Splash</div>
+      </div>
+    </div>
+    <div class="logo-grid" style="margin-top: 16px;">
+      <div class="logo-card dark">
+        <img src="assets/logo.svg" alt="" style="width: 280px; filter: brightness(1.05);" />
+        <div class="logo-card-cap">다크 배경에서</div>
+      </div>
+      <div class="logo-card brand">
+        <img src="assets/icon-mono.svg" alt="" style="width: 120px; color: white;" />
+        <div class="logo-card-cap">브랜드 배경 · 모노</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COLORS ──────────────────────────────────────── -->
+  <section class="sec">
+    <div class="sec-head">
+      <span class="sec-num">COLOR</span>
+      <span class="sec-title">브랜드 컬러</span>
+      <span class="sec-desc">코랄(메인) · 인디고(보조) · 카테고리 액센트 5종</span>
+    </div>
+    <div class="color-grid">
+      <div class="color">
+        <div class="swatch" style="background: #E97A5C;"></div>
+        <div class="meta">
+          <div class="name">Coral · Brand</div>
+          <div class="role">앱 아이콘 · 액션 버튼 · "냠냠"</div>
+          <div class="hex">#E97A5C · oklch(64% 0.17 30)</div>
+        </div>
+      </div>
+      <div class="color">
+        <div class="swatch" style="background: #4B66AE;"></div>
+        <div class="meta">
+          <div class="name">Indigo · Sleep</div>
+          <div class="role">수면 카테고리 · "쿨쿨"</div>
+          <div class="hex">#4B66AE · oklch(60% 0.13 265)</div>
+        </div>
+      </div>
+      <div class="color">
+        <div class="swatch" style="background: #FFF1E6;"></div>
+        <div class="meta">
+          <div class="name">Cream · Face</div>
+          <div class="role">마크 안 얼굴 색 · 따뜻한 배경 보조</div>
+          <div class="hex">#FFF1E6</div>
+        </div>
+      </div>
+      <div class="color">
+        <div class="swatch" style="background: #3A1F12;"></div>
+        <div class="meta">
+          <div class="name">Cocoa · Features</div>
+          <div class="role">눈/입 선 · 친근한 다크</div>
+          <div class="hex">#3A1F12</div>
+        </div>
+      </div>
+      <div class="color">
+        <div class="swatch" style="background: #E2A35C;"></div>
+        <div class="meta">
+          <div class="name">Amber · Feed</div>
+          <div class="role">수유 카테고리</div>
+          <div class="hex">oklch(70% 0.14 60)</div>
+        </div>
+      </div>
+      <div class="color">
+        <div class="swatch" style="background: #4C9F76;"></div>
+        <div class="meta">
+          <div class="name">Green · Diaper</div>
+          <div class="role">배변 카테고리</div>
+          <div class="hex">oklch(62% 0.13 155)</div>
+        </div>
+      </div>
+      <div class="color">
+        <div class="swatch" style="background: #D9534F;"></div>
+        <div class="meta">
+          <div class="name">Rose · Cry</div>
+          <div class="role">울음 알람</div>
+          <div class="hex">oklch(64% 0.18 18)</div>
+        </div>
+      </div>
+      <div class="color">
+        <div class="swatch" style="background: #A07AC4;"></div>
+        <div class="meta">
+          <div class="name">Lavender · Photo</div>
+          <div class="role">갤러리 · 마일스톤</div>
+          <div class="hex">oklch(64% 0.14 295)</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DO / DONT ─────────────────────────────────── -->
+  <section class="sec">
+    <div class="sec-head">
+      <span class="sec-num">USAGE</span>
+      <span class="sec-title">사용 가이드</span>
+      <span class="sec-desc">하면 좋은 것 · 피해야 할 것</span>
+    </div>
+    <div class="rules">
+      <div class="rule-col do">
+        <h3><span class="pill">✓</span> Do</h3>
+        <ul>
+          <li>코랄 메인 컬러 그대로 사용 — 채도·명도 임의 변경 금지</li>
+          <li>마크 주변에 마크 높이의 25% 이상 여백(클리어 스페이스) 확보</li>
+          <li>16px 이하에서는 favicon.svg 사용 (얼굴 디테일 단순화 버전)</li>
+          <li>다크 배경에서는 icon-mono.svg를 흰색(currentColor=white)으로 사용</li>
+          <li>워드마크 듀얼 컬러 유지 — 냠냠=코랄, 쿨쿨=인디고</li>
+          <li>이중 의미 보존 — "잘 먹고 잘 잔다"가 핵심 메시지</li>
+        </ul>
+      </div>
+      <div class="rule-col dont">
+        <h3><span class="pill">✕</span> Don't</h3>
+        <ul>
+          <li>얼굴에 zZ · 달 · 우유병 같은 추가 요소 덧붙이지 않기 (디자인 의도 훼손)</li>
+          <li>그라데이션·그림자·테두리 추가하지 않기 — 플랫 유지</li>
+          <li>마크를 회전·기울이기·찌그러뜨리지 않기</li>
+          <li>워드마크와 마크 비율을 임의 조정하지 않기 (logo.svg 그대로 사용)</li>
+          <li>코랄을 보라/핑크/오렌지로 임의 대체하지 않기</li>
+          <li>아이콘 배경 라운드 비율 변경 금지 (iOS squircle 비율 기준)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- DOWNLOAD ──────────────────────────────────── -->
+  <section class="sec">
+    <div class="sec-head">
+      <span class="sec-num">FILES</span>
+      <span class="sec-title">파일 다운로드</span>
+      <span class="sec-desc">SVG 원본 — 클릭하면 새 탭에서 열려요</span>
+    </div>
+    <div class="files">
+      <a class="file" href="assets/icon.svg" target="_blank" rel="noopener">
+        <div class="ic"><img src="assets/icon.svg" alt="" /></div>
+        <div>
+          <div class="nm">앱 아이콘</div>
+          <div class="pt">assets/icon.svg</div>
+        </div>
+        <div class="arrow">↗</div>
+      </a>
+      <a class="file" href="assets/favicon.svg" target="_blank" rel="noopener">
+        <div class="ic"><img src="assets/favicon.svg" alt="" /></div>
+        <div>
+          <div class="nm">파비콘</div>
+          <div class="pt">assets/favicon.svg</div>
+        </div>
+        <div class="arrow">↗</div>
+      </a>
+      <a class="file" href="assets/logo.svg" target="_blank" rel="noopener">
+        <div class="ic"><img src="assets/logo.svg" alt="" style="width: 90%; height: auto;" /></div>
+        <div>
+          <div class="nm">가로 로고</div>
+          <div class="pt">assets/logo.svg</div>
+        </div>
+        <div class="arrow">↗</div>
+      </a>
+      <a class="file" href="assets/logo-stacked.svg" target="_blank" rel="noopener">
+        <div class="ic"><img src="assets/logo-stacked.svg" alt="" style="width: 70%; height: auto;" /></div>
+        <div>
+          <div class="nm">세로 로고</div>
+          <div class="pt">assets/logo-stacked.svg</div>
+        </div>
+        <div class="arrow">↗</div>
+      </a>
+      <a class="file" href="assets/icon-mono.svg" target="_blank" rel="noopener">
+        <div class="ic" style="background: var(--brand); color: white;"><img src="assets/icon-mono.svg" alt="" style="filter: brightness(0) invert(1);" /></div>
+        <div>
+          <div class="nm">모노 마크</div>
+          <div class="pt">assets/icon-mono.svg</div>
+        </div>
+        <div class="arrow">↗</div>
+      </a>
+    </div>
+  </section>
+
+  <footer>
+    <div>© 냠냠쿨쿨 디자인 · 2026-05 · brand v0.1</div>
+    <div>아이콘 소스: <code>design/assets/</code></div>
+  </footer>
+</div>
+</body>
+</html>

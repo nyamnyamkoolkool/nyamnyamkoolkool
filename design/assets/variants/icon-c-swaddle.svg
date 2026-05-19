@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="냠냠쿨쿨 — 속싸개 아기">
+  <title>냠냠쿨쿨 — 속싸개 아기 (시안 C)</title>
+
+  <rect width="256" height="256" rx="56" fill="#E97A5C"/>
+
+  <!-- swaddle (pill / cocoon) -->
+  <rect x="58" y="50" width="140" height="172" rx="70" fill="#FFF1E6"/>
+
+  <!-- sleeping eyes -->
+  <path d="M98,96 Q108,84 118,96"
+        stroke="#3A1F12" stroke-width="6"
+        stroke-linecap="round" fill="none"/>
+  <path d="M138,96 Q148,84 158,96"
+        stroke="#3A1F12" stroke-width="6"
+        stroke-linecap="round" fill="none"/>
+
+  <!-- cheeks -->
+  <ellipse cx="86" cy="120" rx="9" ry="6" fill="#E97A5C" opacity="0.3"/>
+  <ellipse cx="170" cy="120" rx="9" ry="6" fill="#E97A5C" opacity="0.3"/>
+
+  <!-- smile -->
+  <path d="M118,128 Q128,142 138,128"
+        stroke="#3A1F12" stroke-width="5"
+        stroke-linecap="round" fill="none"/>
+
+  <!-- swaddle wrap fold -->
+  <path d="M 70 162 Q 128 148 186 162"
+        stroke="#E97A5C" stroke-width="3.5"
+        stroke-linecap="round" fill="none" opacity="0.45"/>
+</svg>

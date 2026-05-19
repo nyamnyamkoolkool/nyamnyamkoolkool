@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="ko" class="theme-light" style="color-scheme: light;">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>로고 시안 비교 — 냠냠쿨쿨</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+<link rel="apple-touch-icon" href="assets/icon.svg" />
+<link rel="stylesheet" href="css/tokens.css" />
+<link rel="stylesheet" href="css/base.css" />
+<style>
+  html, body { background: #fafaf9; color: oklch(20% 0.018 250); }
+  body { padding: 0; }
+
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 32px 28px 96px; }
+
+  /* ── Topbar ───────────────────────────────────────────── */
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 36px;
+  }
+  .topbar a.back {
+    height: 36px; padding: 0 14px 0 10px;
+    border-radius: 999px;
+    background: white;
+    border: 1px solid oklch(91% 0.006 240);
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 13px; font-weight: 600;
+    color: oklch(35% 0.012 250);
+    text-decoration: none;
+  }
+  .topbar a.back:hover { border-color: oklch(75% 0.008 240); color: oklch(20% 0.018 250); }
+  .topbar .crumb {
+    font-size: 12px; font-weight: 600; letter-spacing: 0.04em;
+    color: oklch(55% 0.012 250); text-transform: uppercase;
+  }
+
+  /* ── Hero ────────────────────────────────────────────── */
+  .hero {
+    padding: 8px 0 36px;
+    border-bottom: 1px solid oklch(92% 0.005 240);
+    margin-bottom: 40px;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 48px;
+    align-items: end;
+  }
+  @media (max-width: 860px) {
+    .hero { grid-template-columns: 1fr; gap: 18px; padding-bottom: 24px; margin-bottom: 28px; }
+  }
+  .hero h1 {
+    font-size: clamp(32px, 4.4vw, 48px);
+    line-height: 1.08;
+    letter-spacing: -0.025em;
+    font-weight: 700;
+    margin: 0;
+    text-wrap: balance;
+    color: oklch(15% 0.018 250);
+  }
+  .hero h1 em { font-style: normal; color: var(--brand); }
+  .hero p {
+    color: oklch(40% 0.012 250);
+    font-size: 14.5px;
+    line-height: 1.65;
+    margin: 0;
+    max-width: 50ch;
+  }
+
+  /* ── Variant grid ───────────────────────────────────── */
+  .v-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  .v-card {
+    background: white;
+    border: 1px solid oklch(92% 0.005 240);
+    border-radius: 22px;
+    padding: 24px 22px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    position: relative;
+  }
+  .v-card.current {
+    border-color: oklch(72% 0.16 30 / 0.7);
+    border-width: 2px;
+    padding: 23px 21px 21px;
+  }
+  .v-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 10.5px; font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--brand);
+    padding: 4px 9px;
+    border-radius: 6px;
+    background: oklch(96% 0.025 30);
+    align-self: flex-start;
+    text-transform: uppercase;
+  }
+  .v-card.current .v-tag {
+    background: var(--brand);
+    color: white;
+  }
+  .v-hero-icon {
+    width: 100%;
+    aspect-ratio: 1;
+    max-width: 220px;
+    align-self: center;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 14px 36px -16px oklch(64% 0.17 30 / 0.45), 0 4px 10px -4px oklch(20% 0.018 250 / 0.08);
+  }
+  .v-hero-icon img { width: 100%; height: 100%; display: block; }
+
+  .v-title {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.018em;
+    color: oklch(15% 0.018 250);
+    margin: 0;
+  }
+  .v-desc {
+    font-size: 13.5px;
+    color: oklch(38% 0.012 250);
+    line-height: 1.6;
+    margin: 6px 0 0;
+  }
+
+  /* scale ladder */
+  .v-scales {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 16px 6px;
+    border-top: 1px solid oklch(94% 0.005 240);
+    border-bottom: 1px solid oklch(94% 0.005 240);
+  }
+  .v-scale {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+  }
+  .v-scale img { display: block; }
+  .v-scale .ic64 { border-radius: 14px; box-shadow: 0 2px 6px -2px oklch(20% 0.018 250 / 0.15); }
+  .v-scale .ic40 { border-radius: 9px; box-shadow: 0 1px 4px -1px oklch(20% 0.018 250 / 0.12); }
+  .v-scale .ic24 { border-radius: 5.5px; }
+  .v-scale .ic16 { border-radius: 3.5px; }
+  .v-scale .lbl {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: oklch(55% 0.012 250);
+  }
+
+  /* prop list */
+  .v-props { display: flex; flex-direction: column; gap: 8px; }
+  .v-prop {
+    display: grid;
+    grid-template-columns: 52px 1fr;
+    gap: 10px;
+    font-size: 12.5px;
+    line-height: 1.5;
+  }
+  .v-prop dt {
+    color: oklch(55% 0.012 250);
+    font-weight: 600;
+  }
+  .v-prop dd {
+    margin: 0;
+    color: oklch(28% 0.012 250);
+    font-weight: 500;
+  }
+
+  /* iOS dock mock */
+  .v-on-home {
+    background: linear-gradient(160deg, oklch(78% 0.10 240) 0%, oklch(72% 0.12 30) 100%);
+    border-radius: 16px;
+    padding: 14px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
+  .v-on-home .slot {
+    aspect-ratio: 1;
+    border-radius: 12px;
+    background: oklch(100% 0 0 / 0.22);
+    backdrop-filter: blur(3px);
+  }
+  .v-on-home .slot.real {
+    background: transparent;
+    padding: 0;
+  }
+  .v-on-home .slot.real img {
+    width: 100%; height: 100%;
+    border-radius: 12px;
+    display: block;
+  }
+
+  .v-file {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: oklch(55% 0.012 250);
+    margin-top: 2px;
+  }
+  .v-file b {
+    color: oklch(28% 0.012 250);
+    font-weight: 600;
+  }
+
+  /* ── Decision row ───────────────────────────────────── */
+  .decide {
+    margin-top: 56px;
+    padding: 28px 32px;
+    background: linear-gradient(140deg, oklch(96% 0.025 30) 0%, oklch(96% 0.022 265) 100%);
+    border: 1px solid oklch(92% 0.025 30);
+    border-radius: 22px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 28px;
+    align-items: center;
+  }
+  @media (max-width: 720px) { .decide { grid-template-columns: 1fr; padding: 22px; } }
+  .decide h3 { font-size: 17px; font-weight: 700; letter-spacing: -0.012em; margin: 0 0 6px; }
+  .decide p { font-size: 13.5px; color: oklch(28% 0.012 250); line-height: 1.55; margin: 0; max-width: 56ch; }
+  .decide-pills { display: inline-flex; gap: 8px; flex-wrap: wrap; }
+  .decide-pills span {
+    font-family: var(--font-mono);
+    font-size: 11px; font-weight: 700;
+    padding: 6px 10px;
+    background: white;
+    border: 1px solid oklch(90% 0.025 30);
+    border-radius: 8px;
+    color: oklch(28% 0.018 250);
+  }
+
+  /* ── Footer ─────────────────────────────────────────── */
+  footer {
+    margin-top: 80px;
+    padding-top: 22px;
+    border-top: 1px solid oklch(92% 0.005 240);
+    color: oklch(50% 0.014 250);
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  footer code {
+    font-family: var(--font-mono);
+    padding: 2px 6px;
+    background: oklch(96% 0.005 240);
+    border-radius: 4px;
+    color: oklch(25% 0.018 250);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="topbar">
+    <a class="back" href="brand.html">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      브랜드 가이드
+    </a>
+    <div class="crumb">Logo · 시안 비교</div>
+  </header>
+
+  <!-- HERO ─────────────────────────────────────────── -->
+  <section class="hero">
+    <h1>같은 브랜드,<br/><em>네 가지 결</em>의 시안.</h1>
+    <p>
+      "잘 먹고 잘 자는 아기"를 풀어내는 방법이 여러 가지 있어요.
+      얼굴로 정면 승부할지, 달·별 같은 심볼릭으로 갈지, 캐릭터를 몸까지 키울지, 그릇·zZ로 식+잠을 동시에 보여줄지.
+      네 시안을 16px 파비콘부터 iOS 홈 화면까지 같은 조건으로 비교해보세요.
+    </p>
+  </section>
+
+  <div class="v-grid">
+
+    <!-- ── A: current — sleeping face ── -->
+    <article class="v-card current">
+      <span class="v-tag">현재 시안 · A</span>
+      <div class="v-hero-icon"><img src="assets/icon.svg" alt="시안 A — 잠든 미소 얼굴"/></div>
+      <div>
+        <h3 class="v-title">잠든 미소 얼굴</h3>
+        <p class="v-desc">위로 휘는 두 감긴 눈 = 잘 자는 표정, 살짝 웃는 입꼬리 = 방금 잘 먹은 만족. 별도 요소 없이 얼굴 하나로 양쪽 의미.</p>
+      </div>
+      <div class="v-scales">
+        <div class="v-scale"><img class="ic64" src="assets/icon.svg" width="64" height="64" alt=""/><span class="lbl">64</span></div>
+        <div class="v-scale"><img class="ic40" src="assets/icon.svg" width="40" height="40" alt=""/><span class="lbl">40</span></div>
+        <div class="v-scale"><img class="ic24" src="assets/favicon.svg" width="24" height="24" alt=""/><span class="lbl">24</span></div>
+        <div class="v-scale"><img class="ic16" src="assets/favicon.svg" width="16" height="16" alt=""/><span class="lbl">16</span></div>
+      </div>
+      <dl class="v-props">
+        <div class="v-prop"><dt>결</dt><dd>anthropomorphic · 다정함</dd></div>
+        <div class="v-prop"><dt>강점</dt><dd>캐릭터성, 즉시 의미 인지, 16px까지 살아남음</dd></div>
+        <div class="v-prop"><dt>약점</dt><dd>"얼굴 로고"가 흔함, 카테고리에서 다른 육아앱과 헷갈릴 수 있음</dd></div>
+        <div class="v-prop"><dt>추천</dt><dd>B2C 신생아 부모층, 따뜻함을 최전선으로</dd></div>
+      </dl>
+      <div class="v-on-home">
+        <div class="slot"></div><div class="slot"></div>
+        <div class="slot real"><img src="assets/icon.svg" alt=""/></div>
+        <div class="slot"></div>
+        <div class="slot"></div><div class="slot"></div><div class="slot"></div><div class="slot"></div>
+      </div>
+      <div class="v-file">파일: <b>assets/icon.svg</b> (현재 적용 중)</div>
+    </article>
+
+    <!-- ── B: moon + star ── -->
+    <article class="v-card">
+      <span class="v-tag">시안 B</span>
+      <div class="v-hero-icon"><img src="assets/variants/icon-b-moon.svg" alt="시안 B — 달과 별"/></div>
+      <div>
+        <h3 class="v-title">달과 별</h3>
+        <p class="v-desc">초승달 한 조각과 작은 별들. 얼굴을 빼서 더 절제되고 premium한 결. "잘 자는 밤"의 직접적 심볼, "잘 먹는"은 코랄 brand color가 전달.</p>
+      </div>
+      <div class="v-scales">
+        <div class="v-scale"><img class="ic64" src="assets/variants/icon-b-moon.svg" width="64" height="64" alt=""/><span class="lbl">64</span></div>
+        <div class="v-scale"><img class="ic40" src="assets/variants/icon-b-moon.svg" width="40" height="40" alt=""/><span class="lbl">40</span></div>
+        <div class="v-scale"><img class="ic24" src="assets/variants/icon-b-moon.svg" width="24" height="24" alt=""/><span class="lbl">24</span></div>
+        <div class="v-scale"><img class="ic16" src="assets/variants/icon-b-moon.svg" width="16" height="16" alt=""/><span class="lbl">16</span></div>
+      </div>
+      <dl class="v-props">
+        <div class="v-prop"><dt>결</dt><dd>symbolic · 절제된 brand mark</dd></div>
+        <div class="v-prop"><dt>강점</dt><dd>16px에서도 또렷, 시간 지나도 안 질림, premium</dd></div>
+        <div class="v-prop"><dt>약점</dt><dd>"먹는다"가 직접 안 보임, 다른 수면 앱과 혼동 가능</dd></div>
+        <div class="v-prop"><dt>추천</dt><dd>고급스러운 톤, 신생아~24개월 외 확장 여지</dd></div>
+      </dl>
+      <div class="v-on-home">
+        <div class="slot"></div><div class="slot"></div>
+        <div class="slot real"><img src="assets/variants/icon-b-moon.svg" alt=""/></div>
+        <div class="slot"></div>
+        <div class="slot"></div><div class="slot"></div><div class="slot"></div><div class="slot"></div>
+      </div>
+      <div class="v-file">파일: <b>assets/variants/icon-b-moon.svg</b></div>
+    </article>
+
+    <!-- ── C: swaddled baby ── -->
+    <article class="v-card">
+      <span class="v-tag">시안 C</span>
+      <div class="v-hero-icon"><img src="assets/variants/icon-c-swaddle.svg" alt="시안 C — 속싸개 아기"/></div>
+      <div>
+        <h3 class="v-title">속싸개 아기</h3>
+        <p class="v-desc">얼굴만이 아니라 몸까지 캐릭터로 — 속싸개에 포근하게 싸여 잠든 아기. "잘 자는 아기"를 가장 narrative하게 그린 시안. 일러스트 풍이 강함.</p>
+      </div>
+      <div class="v-scales">
+        <div class="v-scale"><img class="ic64" src="assets/variants/icon-c-swaddle.svg" width="64" height="64" alt=""/><span class="lbl">64</span></div>
+        <div class="v-scale"><img class="ic40" src="assets/variants/icon-c-swaddle.svg" width="40" height="40" alt=""/><span class="lbl">40</span></div>
+        <div class="v-scale"><img class="ic24" src="assets/variants/icon-c-swaddle.svg" width="24" height="24" alt=""/><span class="lbl">24</span></div>
+        <div class="v-scale"><img class="ic16" src="assets/variants/icon-c-swaddle.svg" width="16" height="16" alt=""/><span class="lbl">16</span></div>
+      </div>
+      <dl class="v-props">
+        <div class="v-prop"><dt>결</dt><dd>narrative · 캐릭터 마스코트</dd></div>
+        <div class="v-prop"><dt>강점</dt><dd>"신생아 보호" 컨셉이 가장 직접적, 굿즈/스티커 확장에 유리</dd></div>
+        <div class="v-prop"><dt>약점</dt><dd>일러스트 디테일이 강해 16px에서 단순 알약처럼 보일 수 있음</dd></div>
+        <div class="v-prop"><dt>추천</dt><dd>가족 공유·앨범 중심으로 따뜻함을 더 키우고 싶을 때</dd></div>
+      </dl>
+      <div class="v-on-home">
+        <div class="slot"></div><div class="slot"></div>
+        <div class="slot real"><img src="assets/variants/icon-c-swaddle.svg" alt=""/></div>
+        <div class="slot"></div>
+        <div class="slot"></div><div class="slot"></div><div class="slot"></div><div class="slot"></div>
+      </div>
+      <div class="v-file">파일: <b>assets/variants/icon-c-swaddle.svg</b></div>
+    </article>
+
+    <!-- ── D: bowl + zZ ── -->
+    <article class="v-card">
+      <span class="v-tag">시안 D</span>
+      <div class="v-hero-icon"><img src="assets/variants/icon-d-bowl.svg" alt="시안 D — 그릇과 zZ"/></div>
+      <div>
+        <h3 class="v-title">한 그릇 먹고 쿨쿨</h3>
+        <p class="v-desc">아래는 이유식 한 그릇, 위는 잠든 zZ. 식+잠을 한 화면에 동시에 보여주는 비주얼 펀. "냠냠쿨쿨"이라는 이름의 두 음절을 한 마크에 직접 매핑.</p>
+      </div>
+      <div class="v-scales">
+        <div class="v-scale"><img class="ic64" src="assets/variants/icon-d-bowl.svg" width="64" height="64" alt=""/><span class="lbl">64</span></div>
+        <div class="v-scale"><img class="ic40" src="assets/variants/icon-d-bowl.svg" width="40" height="40" alt=""/><span class="lbl">40</span></div>
+        <div class="v-scale"><img class="ic24" src="assets/variants/icon-d-bowl.svg" width="24" height="24" alt=""/><span class="lbl">24</span></div>
+        <div class="v-scale"><img class="ic16" src="assets/variants/icon-d-bowl.svg" width="16" height="16" alt=""/><span class="lbl">16</span></div>
+      </div>
+      <dl class="v-props">
+        <div class="v-prop"><dt>결</dt><dd>visual pun · 메시지 직격</dd></div>
+        <div class="v-prop"><dt>강점</dt><dd>앱 기능(수유·수면 기록)과 일대일 매핑, 차별화 강함</dd></div>
+        <div class="v-prop"><dt>약점</dt><dd>요소 2개라 24px 이하에서 zZ가 흐려질 수 있음, 다소 illustrative</dd></div>
+        <div class="v-prop"><dt>추천</dt><dd>일지/기록 기능을 1차 가치로 내세울 때</dd></div>
+      </dl>
+      <div class="v-on-home">
+        <div class="slot"></div><div class="slot"></div>
+        <div class="slot real"><img src="assets/variants/icon-d-bowl.svg" alt=""/></div>
+        <div class="slot"></div>
+        <div class="slot"></div><div class="slot"></div><div class="slot"></div><div class="slot"></div>
+      </div>
+      <div class="v-file">파일: <b>assets/variants/icon-d-bowl.svg</b></div>
+    </article>
+
+  </div>
+
+  <!-- ── DECIDE ───────────────────────────────────── -->
+  <section class="decide">
+    <div>
+      <h3>마음에 드는 시안을 알려주세요</h3>
+      <p>
+        "B로 진행" / "C 톤 약간 차분하게" / "D인데 그릇 색만 인디고"처럼 말씀해주시면
+        선택한 시안을 <code>assets/icon.svg</code>로 교체하고 13개 화면 favicon·logo·logo-stacked까지 일괄 갱신합니다.
+      </p>
+    </div>
+    <div class="decide-pills">
+      <span>A로 진행</span>
+      <span>B로 진행</span>
+      <span>C로 진행</span>
+      <span>D로 진행</span>
+    </div>
+  </section>
+
+  <footer>
+    <div>© 냠냠쿨쿨 디자인 · 2026-05 · brand v0.2 · 시안 비교</div>
+    <div>원본: <code>design/assets/variants/</code></div>
+  </footer>
+</div>
+</body>
+</html>

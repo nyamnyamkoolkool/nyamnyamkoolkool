@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="냠냠쿨쿨 — 한 그릇 먹고 쿨쿨">
+  <title>냠냠쿨쿨 — 그릇과 zZ (시안 D)</title>
+
+  <rect width="256" height="256" rx="56" fill="#E97A5C"/>
+
+  <!-- bowl body (semicircle) -->
+  <path d="M 68 162 A 60 60 0 0 0 188 162 Z" fill="#FFF1E6"/>
+
+  <!-- bowl rim -->
+  <rect x="62" y="157" width="132" height="7" rx="3.5" fill="#FFF1E6"/>
+
+  <!-- bowl foot -->
+  <rect x="100" y="210" width="56" height="9" rx="4.5" fill="#FFF1E6" opacity="0.7"/>
+
+  <!-- small Z (lower) -->
+  <path d="M 128 124 L 156 124 L 128 152 L 156 152"
+        stroke="#FFF1E6" stroke-width="6"
+        stroke-linejoin="miter" stroke-linecap="round" fill="none"/>
+
+  <!-- large Z (upper) -->
+  <path d="M 76 56 L 122 56 L 76 108 L 122 108"
+        stroke="#FFF1E6" stroke-width="7.5"
+        stroke-linejoin="miter" stroke-linecap="round" fill="none"/>
+</svg>

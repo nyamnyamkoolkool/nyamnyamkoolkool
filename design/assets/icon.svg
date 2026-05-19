@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="냠냠쿨쿨">
+  <title>냠냠쿨쿨 — 잘 먹고 잘 자는 아기</title>
+
+  <rect width="256" height="256" rx="56" fill="#E97A5C"/>
+
+  <circle cx="128" cy="136" r="74" fill="#FFF1E6"/>
+
+  <path d="M82,126 Q98,108 114,126"
+        stroke="#3A1F12" stroke-width="7.5"
+        stroke-linecap="round" fill="none"/>
+  <path d="M142,126 Q158,108 174,126"
+        stroke="#3A1F12" stroke-width="7.5"
+        stroke-linecap="round" fill="none"/>
+
+  <path d="M108,162 Q128,178 148,162"
+        stroke="#3A1F12" stroke-width="6.5"
+        stroke-linecap="round" fill="none"/>
+
+  <ellipse cx="74" cy="156" rx="11" ry="7.5" fill="#E97A5C" opacity="0.32"/>
+  <ellipse cx="182" cy="156" rx="11" ry="7.5" fill="#E97A5C" opacity="0.32"/>
+</svg>

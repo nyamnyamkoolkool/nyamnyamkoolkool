@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="냠냠쿨쿨">
+  <rect width="256" height="256" rx="48" fill="#E97A5C"/>
+
+  <circle cx="128" cy="132" r="80" fill="#FFF1E6"/>
+
+  <path d="M74,122 Q98,96 122,122"
+        stroke="#3A1F12" stroke-width="14"
+        stroke-linecap="round" fill="none"/>
+  <path d="M134,122 Q158,96 182,122"
+        stroke="#3A1F12" stroke-width="14"
+        stroke-linecap="round" fill="none"/>
+
+  <path d="M102,168 Q128,188 154,168"
+        stroke="#3A1F12" stroke-width="12"
+        stroke-linecap="round" fill="none"/>
+</svg>
