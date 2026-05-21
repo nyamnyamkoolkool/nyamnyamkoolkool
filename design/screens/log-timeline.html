@@ -192,6 +192,87 @@
   }
   .upcoming__t { font-size: var(--fs-13); color: var(--c-feed); font-weight: 700; }
   .upcoming__s { font-size: var(--fs-12); color: var(--muted); }
+
+  /* 머지 후보 카드 — 같은 카테고리 ±N분 윈도우 충돌 */
+  .merge-card {
+    padding: var(--s-3) var(--s-4);
+    background: linear-gradient(135deg, oklch(96% 0.04 60) 0%, oklch(96% 0.025 30) 100%);
+    border: 1px solid oklch(88% 0.10 60);
+    border-radius: var(--r-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-3);
+  }
+  .merge-card__head {
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+    font-size: var(--fs-13);
+    font-weight: 700;
+    color: oklch(38% 0.16 60);
+  }
+  .merge-card__head svg { color: oklch(58% 0.16 60); }
+  .merge-card__items {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--s-2);
+  }
+  .merge-card__item {
+    padding: 10px 12px;
+    background: white;
+    border: 1px solid oklch(94% 0.04 60);
+    border-radius: var(--r-md);
+    font-size: var(--fs-12);
+    line-height: 1.4;
+  }
+  .merge-card__item .t { font-weight: 700; color: var(--fg-strong); }
+  .merge-card__item .s { color: var(--muted); margin-top: 2px; }
+  .merge-card__actions {
+    display: flex;
+    gap: var(--s-2);
+  }
+  .merge-card__actions button {
+    flex: 1;
+    padding: 10px;
+    border-radius: var(--r-md);
+    font-size: var(--fs-13);
+    font-weight: 700;
+  }
+  .merge-card__actions .keep { background: white; color: oklch(28% 0.012 250); border: 1px solid var(--border); }
+  .merge-card__actions .merge { background: oklch(58% 0.16 60); color: white; }
+
+  /* source 배지 — 음성/수동/자동 출처 시각화 */
+  .src-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 1px 6px;
+    border-radius: var(--r-pill);
+    font-size: 10px;
+    font-weight: 700;
+    background: var(--bg-elev);
+    color: var(--muted);
+    margin-left: 6px;
+  }
+  .src-badge.voice { background: oklch(96% 0.025 30); color: var(--brand); }
+  .src-badge.smart { background: oklch(96% 0.020 265); color: oklch(45% 0.13 265); }
+  .src-badge.auto { background: oklch(96% 0.05 145); color: oklch(45% 0.15 145); }
+
+  /* 역할 배지 */
+  .role-badge {
+    font-size: 9.5px;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 3px;
+    background: var(--bg-elev);
+    color: var(--muted);
+    margin-left: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .role-badge.admin { background: oklch(92% 0.10 30); color: oklch(38% 0.16 30); }
+  .role-badge.guardian { background: oklch(92% 0.08 265); color: oklch(38% 0.13 265); }
+  .role-badge.viewer { background: var(--bg-elev); color: var(--muted); }
 </style>
 </head>
 <body data-active-tab="log">
@@ -216,8 +297,8 @@
         </button>
       </div>
       <div class="date-bar__title">
-        <div class="date-bar__date">5월 18일</div>
-        <div class="date-bar__day">일요일 · 생후 142일</div>
+        <div class="date-bar__date">5월 21일</div>
+        <div class="date-bar__day">목요일 · 생후 145일</div>
       </div>
       <div class="date-bar__nav">
         <button aria-label="다음 날짜" disabled style="opacity:0.4;">
@@ -260,6 +341,28 @@
       <button class="btn btn--ghost" style="background: white; color: var(--c-feed);" onclick="location.href='log-add.html'">미리 기록</button>
     </section>
 
+    <!-- 머지 후보 카드 — 같은 수유 ±2분 윈도우 충돌 (UC-2 입력 UX 4원칙 + Cloud Function onCreate 트리거) -->
+    <section class="merge-card">
+      <div class="merge-card__head">
+        <svg class="icon-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+        같은 수유 기록이 2건 있어요 · 합칠까요?
+      </div>
+      <div class="merge-card__items">
+        <div class="merge-card__item">
+          <div class="t">14:23 · 분유 120ml</div>
+          <div class="s">민수 아빠 · 수동 입력</div>
+        </div>
+        <div class="merge-card__item">
+          <div class="t">14:24 · 분유 120ml</div>
+          <div class="s">영자 외할머니 · 음성 (Siri)</div>
+        </div>
+      </div>
+      <div class="merge-card__actions">
+        <button class="keep">따로 유지</button>
+        <button class="merge">하나로 합치기</button>
+      </div>
+    </section>
+
     <section>
       <div class="section-title">
         <span>오늘 기록</span>
@@ -279,7 +382,7 @@
               </div>
               <span class="timeline__cat">수유</span>
             </div>
-            <div class="by-meta">민수 아빠</div>
+            <div class="by-meta">민수 아빠<span class="role-badge admin">ADMIN</span><span class="src-badge smart">Smart Default</span></div>
           </div>
         </div>
 
@@ -295,7 +398,7 @@
               </div>
               <span class="timeline__cat">울음</span>
             </div>
-            <div class="by-meta">지영 엄마 · Gemini 2.5 Flash</div>
+            <div class="by-meta">지영 엄마<span class="role-badge admin">ADMIN</span> · Gemini 2.5 Flash</div>
           </div>
         </div>
 
@@ -327,7 +430,7 @@
               </div>
               <span class="timeline__cat">배변</span>
             </div>
-            <div class="by-meta">영자 외할머니</div>
+            <div class="by-meta">영자 외할머니<span class="role-badge viewer">VIEWER</span><span class="src-badge voice">Bixby</span></div>
           </div>
         </div>
 
@@ -343,7 +446,7 @@
               </div>
               <span class="timeline__cat">수유</span>
             </div>
-            <div class="by-meta">지영 엄마 · 음성 입력 (Siri)</div>
+            <div class="by-meta">지영 엄마<span class="role-badge admin">ADMIN</span><span class="src-badge voice">Siri</span></div>
           </div>
         </div>
 
@@ -359,7 +462,7 @@
               </div>
               <span class="timeline__cat">배변</span>
             </div>
-            <div class="by-meta">영자 외할머니</div>
+            <div class="by-meta">영자 외할머니<span class="role-badge viewer">VIEWER</span></div>
           </div>
         </div>
 
@@ -375,7 +478,7 @@
               </div>
               <span class="timeline__cat">수면</span>
             </div>
-            <div class="by-meta">지영 엄마</div>
+            <div class="by-meta">지영 엄마<span class="role-badge admin">ADMIN</span><span class="src-badge auto">패턴 추정</span></div>
           </div>
         </div>
 
@@ -390,7 +493,7 @@
               </div>
               <span class="timeline__cat">수유</span>
             </div>
-            <div class="by-meta">지영 엄마</div>
+            <div class="by-meta">지영 엄마<span class="role-badge admin">ADMIN</span></div>
           </div>
         </div>
 
