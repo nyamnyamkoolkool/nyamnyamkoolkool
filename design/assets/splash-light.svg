@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 390 844" role="img" aria-label="냠냠쿨쿨 스플래시 (라이트, 애니메이션) — 잘 먹고 잘 자는 다정한 동행">
+  <title>냠냠쿨쿨 — 스플래시 (Cream Light, 애니메이션)</title>
+
+  <defs>
+    <radialGradient id="bgGlowLight" cx="50%" cy="36%" r="72%">
+      <stop offset="0%" stop-color="#FFF8F0"/>
+      <stop offset="55%" stop-color="#FFF1E6"/>
+      <stop offset="100%" stop-color="#FBE3CE"/>
+    </radialGradient>
+    <filter id="cardShadowLight" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="8"/>
+      <feOffset dx="0" dy="10"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.22"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="390" height="844" fill="url(#bgGlowLight)"/>
+
+  <!-- 중앙 아이콘: 호흡 (라이트는 더 절제된 1.5% scale) -->
+  <g transform="translate(195, 374)">
+    <animateTransform attributeName="transform" type="scale"
+                      values="1; 1.015; 1"
+                      dur="3.8s" repeatCount="indefinite"
+                      calcMode="spline"
+                      keyTimes="0; 0.5; 1"
+                      keySplines="0.4 0 0.6 1; 0.4 0 0.6 1"
+                      additive="sum"/>
+
+    <g transform="translate(-106, -106)" filter="url(#cardShadowLight)">
+      <rect width="212" height="212" rx="48" fill="#E97A5C"/>
+      <circle cx="106" cy="113" r="62" fill="#FFF1E6"/>
+
+      <g stroke="#3A1F12" stroke-linecap="round" fill="none">
+        <path d="M68,105 Q81,90 94,105" stroke-width="6.2"/>
+        <path d="M118,105 Q131,90 144,105" stroke-width="6.2"/>
+        <path d="M90,134 Q106,148 122,134" stroke-width="5.4">
+          <animate attributeName="d"
+                   values="M90,134 Q106,148 122,134;
+                           M90,133 Q106,150 122,133;
+                           M90,134 Q106,148 122,134"
+                   dur="5.0s" repeatCount="indefinite"
+                   calcMode="spline"
+                   keyTimes="0; 0.5; 1"
+                   keySplines="0.4 0 0.6 1; 0.4 0 0.6 1"/>
+        </path>
+      </g>
+
+      <!-- 발그레 볼 -->
+      <ellipse cx="61" cy="129" rx="9.2" ry="6.3" fill="#E97A5C">
+        <animate attributeName="opacity" values="0.30; 0.50; 0.30"
+                 dur="4.2s" repeatCount="indefinite"/>
+      </ellipse>
+      <ellipse cx="151" cy="129" rx="9.2" ry="6.3" fill="#E97A5C">
+        <animate attributeName="opacity" values="0.30; 0.50; 0.30"
+                 dur="4.2s" begin="-0.4s" repeatCount="indefinite"/>
+      </ellipse>
+    </g>
+  </g>
+
+  <!-- 워드마크 페이드 인 -->
+  <text x="195" y="540"
+        text-anchor="middle"
+        font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', 'Pretendard', sans-serif"
+        font-size="38" font-weight="800" fill="#3A1F12"
+        opacity="0"
+        letter-spacing="-1.2">냠냠쿨쿨
+    <animate attributeName="opacity" values="0; 0; 1"
+             dur="1.0s" keyTimes="0; 0.2; 1" fill="freeze"/>
+  </text>
+
+  <text x="195" y="572"
+        text-anchor="middle"
+        font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', 'Pretendard', sans-serif"
+        font-size="13.5" font-weight="500" fill="#3A1F12" opacity="0"
+        letter-spacing="-0.2">잘 먹고 잘 자는, 다정한 동행
+    <animate attributeName="opacity" values="0; 0; 0.62"
+             dur="1.4s" keyTimes="0; 0.45; 1" fill="freeze"/>
+  </text>
+
+  <!-- 로딩 점: 좌 → 중 → 우 -->
+  <g fill="#E97A5C">
+    <circle cx="180" cy="772" r="3" opacity="0.35">
+      <animate attributeName="opacity" values="0.35; 0.95; 0.35; 0.35; 0.35"
+               keyTimes="0; 0.2; 0.5; 0.8; 1"
+               dur="1.5s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="3; 3.6; 3; 3; 3"
+               keyTimes="0; 0.2; 0.5; 0.8; 1"
+               dur="1.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="195" cy="772" r="3" opacity="0.35">
+      <animate attributeName="opacity" values="0.35; 0.35; 0.95; 0.35; 0.35"
+               keyTimes="0; 0.2; 0.5; 0.8; 1"
+               dur="1.5s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="3; 3; 3.6; 3; 3"
+               keyTimes="0; 0.2; 0.5; 0.8; 1"
+               dur="1.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="210" cy="772" r="3" opacity="0.35">
+      <animate attributeName="opacity" values="0.35; 0.35; 0.35; 0.95; 0.35"
+               keyTimes="0; 0.2; 0.5; 0.8; 1"
+               dur="1.5s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="3; 3; 3; 3.6; 3"
+               keyTimes="0; 0.2; 0.5; 0.8; 1"
+               dur="1.5s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+</svg>

@@ -277,6 +277,149 @@
   .logo-card.dark .logo-card-cap { color: oklch(70% 0.014 250); }
   .logo-card.brand .logo-card-cap { color: white; opacity: 0.85; }
 
+  /* ── Splash ─────────────────────────────────────────── */
+  .splash-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 4px;
+  }
+  @media (max-width: 760px) { .splash-grid { grid-template-columns: 1fr; } }
+  .splash-card {
+    background: white;
+    border: 1px solid oklch(92% 0.005 240);
+    border-radius: 22px;
+    padding: 28px 24px 22px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  .splash-frame {
+    width: 100%;
+    max-width: 268px;
+    aspect-ratio: 390 / 844;
+    border-radius: 38px;
+    overflow: hidden;
+    position: relative;
+    box-shadow:
+      0 24px 50px -20px oklch(20% 0.018 250 / 0.32),
+      0 0 0 8px oklch(15% 0.018 250),
+      0 0 0 10px oklch(28% 0.018 250);
+  }
+  .splash-frame::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 36%;
+    height: 22px;
+    background: oklch(15% 0.018 250);
+    border-radius: 0 0 14px 14px;
+    z-index: 2;
+  }
+  .splash-frame img {
+    width: 100%; height: 100%;
+    display: block;
+    object-fit: cover;
+  }
+  .splash-meta {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .splash-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: oklch(45% 0.012 250);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .splash-file {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: oklch(55% 0.012 250);
+  }
+  .splash-spec {
+    width: 100%;
+    margin-top: 8px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+  }
+  .splash-spec dl {
+    margin: 0;
+    background: oklch(96% 0.005 240);
+    border-radius: 12px;
+    padding: 12px 14px;
+  }
+  .splash-spec dt {
+    font-size: 10.5px;
+    font-weight: 700;
+    color: oklch(55% 0.012 250);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .splash-spec dd {
+    margin: 4px 0 0;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: oklch(22% 0.018 250);
+    font-weight: 600;
+  }
+
+  /* ── Splash Motion ───────────────────────────────── */
+  .motion-grid {
+    margin-top: 24px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+  }
+  .motion-card {
+    background: white;
+    border: 1px solid oklch(92% 0.005 240);
+    border-radius: 14px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .motion-card .m-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .motion-card .m-name {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: oklch(15% 0.018 250);
+    letter-spacing: -0.01em;
+  }
+  .motion-card .m-dur {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--brand);
+    padding: 3px 7px;
+    border-radius: 5px;
+    background: oklch(96% 0.025 30);
+    letter-spacing: 0.02em;
+  }
+  .motion-card .m-mean {
+    font-size: 12px;
+    color: oklch(48% 0.012 250);
+    line-height: 1.5;
+  }
+  .motion-card .m-feel {
+    font-size: 11px;
+    color: oklch(40% 0.012 250);
+    font-style: italic;
+    margin-top: 2px;
+  }
+
   /* ── Colors ─────────────────────────────────────────── */
   .color-grid {
     display: grid;
@@ -590,6 +733,78 @@
       <div class="logo-card brand">
         <img src="assets/icon-mono.svg" alt="" style="width: 120px; color: white;" />
         <div class="logo-card-cap">브랜드 배경 · 모노</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SPLASH ──────────────────────────────────────── -->
+  <section class="sec">
+    <div class="sec-head">
+      <span class="sec-num">SPLASH</span>
+      <span class="sec-title">스플래시 화면 — 첫 인사</span>
+      <span class="sec-desc">"잘 먹고 잘 자는" 느낌을 6가지 미세 모션으로 (라이브 SVG 애니메이션)</span>
+    </div>
+    <div class="splash-grid">
+      <div class="splash-card">
+        <div class="splash-frame">
+          <img src="assets/splash.svg" alt="냠냠쿨쿨 스플래시 (Coral)" />
+        </div>
+        <div class="splash-meta">
+          <span class="splash-label">Default · Coral · Animated</span>
+          <span class="splash-file">assets/splash.svg</span>
+        </div>
+      </div>
+      <div class="splash-card">
+        <div class="splash-frame" style="background: #FFF1E6;">
+          <img src="assets/splash-light.svg" alt="냠냠쿨쿨 스플래시 (Light)" />
+        </div>
+        <div class="splash-meta">
+          <span class="splash-label">Alt · Cream Light · Animated</span>
+          <span class="splash-file">assets/splash-light.svg</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="splash-spec">
+      <dl><dt>비율</dt><dd>390 × 844 (9:19.5)</dd></dl>
+      <dl><dt>안전 영역</dt><dd>top 88 · bottom 64</dd></dl>
+      <dl><dt>지속 시간</dt><dd>1.0 ~ 1.5s</dd></dl>
+      <dl><dt>모션</dt><dd>SVG SMIL inline</dd></dl>
+      <dl><dt>웹뷰(앱인토스)</dt><dd>Light 변형 권장</dd></dl>
+      <dl><dt>저모션 모드</dt><dd>정적 PNG fallback (v1.x)</dd></dl>
+    </div>
+
+    <!-- 모션 설명 ──────────────────────────── -->
+    <div class="motion-grid">
+      <div class="motion-card">
+        <div class="m-head"><span class="m-name">얼굴 호흡</span><span class="m-dur">3.6s</span></div>
+        <div class="m-mean">scale 1 → 1.025 → 1 (center origin)</div>
+        <div class="m-feel">잠든 아기의 살아있는 호흡</div>
+      </div>
+      <div class="motion-card">
+        <div class="m-head"><span class="m-name">zZ 떠오르기</span><span class="m-dur">2.6s</span></div>
+        <div class="m-mean">우상단 → 위로 이동 + 페이드</div>
+        <div class="m-feel">"잘 잔다" 직접 표현 (Coral 전용)</div>
+      </div>
+      <div class="motion-card">
+        <div class="m-head"><span class="m-name">볼 톤 발그레</span><span class="m-dur">4.0s</span></div>
+        <div class="m-mean">opacity 0.25 ↔ 0.42</div>
+        <div class="m-feel">"잘 먹은 후" 만족스러운 표정</div>
+      </div>
+      <div class="motion-card">
+        <div class="m-head"><span class="m-name">입꼬리 미소</span><span class="m-dur">4.8s</span></div>
+        <div class="m-mean">d-path 미세 곡률 변화</div>
+        <div class="m-feel">만족스러운 꿈 (subtle)</div>
+      </div>
+      <div class="motion-card">
+        <div class="m-head"><span class="m-name">별빛 깜빡임</span><span class="m-dur">2.8~4.4s</span></div>
+        <div class="m-mean">5개 별, 다른 위상으로 비동기</div>
+        <div class="m-feel">평온한 밤 (Coral 전용)</div>
+      </div>
+      <div class="motion-card">
+        <div class="m-head"><span class="m-name">로딩 점 흐름</span><span class="m-dur">1.5s</span></div>
+        <div class="m-mean">좌 → 중 → 우 순차 강조</div>
+        <div class="m-feel">다정한 동행의 wait</div>
       </div>
     </div>
   </section>

@@ -210,13 +210,20 @@ revokedAt?: Timestamp                 # 분실 시 DEK rewrap trigger
 
 ### 4.4 `/families/{familyId}/memberships/{userId}` (PK = userId)
 ```yaml
-role: 'ADMIN'|'GUARDIAN'|'VIEWER'
-nickname?: string
+role: 'ADMIN'|'GUARDIAN'|'CONTRIBUTOR'|'VIEWER'      # 4단계 (2026-05-21 갱신)
+nickname?: string                                     # "외할머니"/"이모" 등 표시명
 wrappedGroupKey: bytes
-scopedToBabyIds?: string[]            # BabyAccessGrant 비정규화 — 빈 array이면 가족 전체 권한
-validUntil?: Timestamp                # 한시적 권한 (베이비시터)
+scopedToBabyIds?: string[]                           # BabyAccessGrant 비정규화 — 빈 array이면 가족 전체 권한
+validUntil?: Timestamp                                # 한시적 권한 (베이비시터)
+notifyOthersAboutMyActivity: boolean                 # 본인 일지·사진을 가족에게 알릴지 (기본 true, 2026-05-21 신규)
 joinedAt, leftAt?, joinedViaInvitationId?
 ```
+
+**역할 정의 (4단계)**
+- **ADMIN**: 가족 그룹 생성자/소유자. 모든 권한 + 멤버·결제·AI 프로바이더 설정
+- **GUARDIAN**: 부모 등 주 양육자. 일지·사진·울음 분석 자유, 본인 작성분만 삭제
+- **CONTRIBUTOR** (신규): 시터·임시 양육자·이모/삼촌. **작성·본인분 수정 자유, 삭제는 X**. 멤버·결제·의료정보 관리 불가
+- **VIEWER**: 조회 + 본인 사진 업로드/삭제만 (조부모 기본 추천)
 
 **권한 확인 패턴 (단일 get)**:
 ```javascript
@@ -227,7 +234,37 @@ function canAccessBaby(membership, babyId) {
 function isWithinValidity(membership) {
   return !membership.validUntil || membership.validUntil > Timestamp.now();
 }
+function canWriteLog(role) { return ['ADMIN', 'GUARDIAN', 'CONTRIBUTOR'].includes(role); }
+function canDeleteOwnLog(role) { return ['ADMIN', 'GUARDIAN'].includes(role); }
+function canAccessMedicalNotes(role) { return ['ADMIN', 'GUARDIAN'].includes(role); }
+function canManageMembers(role) { return role === 'ADMIN'; }
 ```
+
+**권한 매트릭스 (4단계, 2026-05-21)**
+| 동작 | ADMIN | GUARDIAN | CONTRIBUTOR | VIEWER |
+|---|---|---|---|---|
+| 일지 작성 (수유·수면·배변) | ✅ | ✅ | ✅ | ❌ |
+| 일지 수정 (본인 작성분) | ✅ | ✅ | ✅ | ❌ |
+| 일지 수정 (타인 작성분) | ✅ | ❌ | ❌ | ❌ |
+| 일지 삭제 (본인) | ✅ | ✅ | ❌ | ❌ |
+| 일지 삭제 (타인) | ✅ | ❌ | ❌ | ❌ |
+| 사진 업로드 | ✅ | ✅ | ✅ | ✅ |
+| 사진 삭제 (본인 업로드분) | ✅ | ✅ | ❌ | ✅ |
+| 사진 삭제 (타인) | ✅ | ❌ | ❌ | ❌ |
+| 마일스톤 태깅 | ✅ | ✅ | ❌ | ❌ |
+| 의료 정보 조회·작성 (BabyMedicalNote) | ✅ | ✅ | ❌ | ❌ |
+| 울음 분석 실행 | ✅ | ✅ | ✅ | ✅ |
+| 멤버 초대·권한 변경 | ✅ | ❌ | ❌ | ❌ |
+| 아기 프로필 수정 | ✅ | ✅ | ❌ | ❌ |
+| AI 프로바이더 설정 | ✅ | ❌ | ❌ | ❌ |
+| 결제·구독 (Pro/Family) | ✅ | ❌ | ❌ | ❌ |
+| 가족 PDF 내보내기 | ✅ | ✅ | ❌ | ❌ |
+
+**역할 사용 시나리오 (페르소나 매핑)**
+- 지영(엄마) → ADMIN (그룹 생성자)
+- 민수(아빠) → ADMIN 또는 GUARDIAN
+- 양가 조부모 → VIEWER (조회·사진 위주)
+- 베이비시터/이모 → CONTRIBUTOR (시간 한정 + scopedToBabyIds로 특정 아기만)
 
 ### 4.5 `/families/{familyId}/babies/{babyId}`
 ```yaml
@@ -252,6 +289,57 @@ payloadCiphertext: bytes              # E2E (라벨 + 자유텍스트)
 payloadNonce: bytes
 severity?: 'LOW'|'MEDIUM'|'HIGH'|'CRITICAL'   # 평문 메타 (이유식 자동 경고용)
 ```
+
+### 4.6a `/families/{familyId}/babies/{babyId}/guardians/{guardianId}` (보호자 관계, 2026-05-21 확장)
+
+아기 한 명에 대한 가족 멤버의 친족 관계 매핑. UI에서 "외할머니가 사진을 추가했어요" 같은 자연스러운 표기에 사용.
+
+```yaml
+userId: string                        # FK → users
+relation: enum                        # 아래 14종 (양가 구분)
+isPrimary: boolean                    # 주 양육자 표시
+nicknameOverride?: string             # 멤버십 nickname을 이 아기 한정 덮어쓰기 (예: "엄마"/"엄마")
+createdAt: Timestamp
+```
+
+**relation enum (14종, 양가 구분)**:
+| 값 | 표시 (한국어 기본) |
+|---|---|
+| `MOTHER` | 엄마 |
+| `FATHER` | 아빠 |
+| `GRANDMA_MATERNAL` | 외할머니 |
+| `GRANDPA_MATERNAL` | 외할아버지 |
+| `GRANDMA_PATERNAL` | 할머니 |
+| `GRANDPA_PATERNAL` | 할아버지 |
+| `AUNT_MATERNAL` | 이모 |
+| `UNCLE_MATERNAL` | 외삼촌 |
+| `AUNT_PATERNAL` | 고모 |
+| `UNCLE_PATERNAL` | 삼촌 |
+| `SIBLING` | 형제·자매 |
+| `SITTER` | 시터 |
+| `STEP_PARENT` | 새부모 (재혼 가정) |
+| `OTHER` | 기타 |
+
+**자동 추천 로직**:
+- Membership 신규 가입 시 `relation`이 명시되지 않으면 `OTHER`
+- `nickname`이 비어 있으면 `relation` 기본 표시명 자동 입력 (사용자 수정 가능)
+- 양가 분리(친가/외가)는 강제 X — 단순히 명칭만 자연스럽게
+
+### 4.6b 알림 가시성 — `Membership.notifyOthersAboutMyActivity` (2026-05-21 신규)
+
+본인이 작성한 활동을 다른 가족 멤버에게 알릴지 토글.
+
+| 값 | 의미 |
+|---|---|
+| `true` (기본) | 본인이 일지 작성·사진 업로드 시 다른 멤버에게 푸시 발송 |
+| `false` | 알림 미발송 (작성·업로드 자체는 가능, 가족이 들어와 봐야만 인지) |
+
+**사용 시나리오**:
+- 시터(CONTRIBUTOR)가 일과 마치고 일지 입력 → 부모만 알림 받음 (조부모는 X)
+- 부모가 비밀스러운 메모 → 본인 활동은 알림 X
+- 조부모(VIEWER)가 사진 업로드 → 부모·자녀 모두 알림 (기본 true)
+
+`NotificationPreference` 컬렉션은 **수신측 토글**(받을지 안 받을지), `Membership.notifyOthersAboutMyActivity`는 **송신측 토글**(알릴지 안 알릴지). 두 조건 모두 만족해야 푸시 발송.
 
 ### 4.7 `/families/{familyId}/feedingLogs/{logId}`
 ```yaml
@@ -540,8 +628,10 @@ service cloud.firestore {
         return isMember() && membership().data.role in roles;
       }
 
-      function isAdmin()    { return hasRole(['ADMIN']); }
-      function isGuardian() { return hasRole(['ADMIN', 'GUARDIAN']); }
+      function isAdmin()       { return hasRole(['ADMIN']); }
+      function isGuardian()    { return hasRole(['ADMIN', 'GUARDIAN']); }
+      function canWrite()      { return hasRole(['ADMIN', 'GUARDIAN', 'CONTRIBUTOR']); }   // CONTRIBUTOR 포함
+      function canDeleteOwn()  { return hasRole(['ADMIN', 'GUARDIAN']); }                  // CONTRIBUTOR 삭제 불가
 
       function canAccessBaby(babyId) {
         let m = membership().data;
@@ -573,6 +663,7 @@ service cloud.firestore {
         allow delete: if isAdmin();
 
         match /medicalNotes/{noteId} {
+          // 의료 정보는 ADMIN·GUARDIAN만 (CONTRIBUTOR·VIEWER 차단)
           allow read, write: if isGuardian() && canAccessBaby(babyId);
         }
         match /guardians/{guardianId} {
@@ -581,17 +672,17 @@ service cloud.firestore {
         }
       }
 
-      // 일지류 (수유/수면/배변)
+      // 일지류 (수유/수면/배변) — CONTRIBUTOR 작성·본인분 수정 허용, 삭제는 GUARDIAN+
       match /{logKind}/{logId}
             where logKind in ['feedingLogs', 'sleepLogs', 'diaperLogs'] {
         allow read: if isMember() && canAccessBaby(resource.data.babyId);
-        allow create: if isGuardian()
+        allow create: if canWrite()
                       && canAccessBaby(request.resource.data.babyId)
                       && request.resource.data.familyId == fid;
-        allow update: if isGuardian()
-                      && (isAdmin() || resource.data.lastEditedBy == request.auth.uid);
+        allow update: if (isAdmin())
+                      || (canWrite() && resource.data.lastEditedBy == request.auth.uid);
         allow delete: if isAdmin()
-                      || (isGuardian() && resource.data.lastEditedBy == request.auth.uid);
+                      || (canDeleteOwn() && resource.data.lastEditedBy == request.auth.uid);
       }
 
       // 사진
