@@ -271,6 +271,87 @@
   .voice-tip strong { color: var(--fg); }
   .voice-tip svg { color: var(--brand); }
 
+  /* 자주 쓰는 양 칩 — 60/90/120/150/180 */
+  .amount-chips {
+    display: flex;
+    gap: var(--s-2);
+    flex-wrap: wrap;
+    margin-top: var(--s-2);
+  }
+  .amount-chips button {
+    flex: 1;
+    min-width: 56px;
+    padding: 12px 8px;
+    border-radius: var(--r-md);
+    background: var(--bg-elev);
+    color: var(--muted);
+    font-family: var(--font-num);
+    font-size: var(--fs-14);
+    font-weight: 700;
+    transition: all var(--transition);
+    border: 1px solid transparent;
+  }
+  .amount-chips button:hover { background: var(--border); color: var(--fg); }
+  .amount-chips button.active {
+    background: var(--tone-soft);
+    color: var(--tone);
+    border-color: var(--tone);
+  }
+
+  /* Smart Default 안내 배너 */
+  .smart-banner {
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+    padding: 10px var(--s-3);
+    background: linear-gradient(135deg, oklch(96% 0.025 30) 0%, oklch(96% 0.020 265) 100%);
+    border: 1px solid oklch(92% 0.025 30);
+    border-radius: var(--r-md);
+    font-size: var(--fs-12);
+    color: oklch(35% 0.018 250);
+  }
+  .smart-banner svg { color: var(--brand); flex-shrink: 0; }
+  .smart-banner strong { color: var(--fg); font-weight: 700; }
+
+  /* 응급 색상 표시 (배변 색상 중 RED/WHITE) */
+  .icon-grid button.emergency {
+    border-color: oklch(70% 0.18 25);
+  }
+  .icon-grid button.emergency .color-swatch {
+    box-shadow: 0 0 0 2px oklch(70% 0.18 25 / 0.3);
+  }
+  .icon-grid button.emergency .emergency-label {
+    display: block;
+    font-size: 10px;
+    color: oklch(58% 0.18 25);
+    font-weight: 700;
+    margin-top: 2px;
+  }
+
+  /* 수면: 진행 중 표시 */
+  .sleep-ongoing {
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+    padding: var(--s-2) var(--s-3);
+    background: oklch(94% 0.05 265);
+    border: 1px solid oklch(82% 0.08 265);
+    border-radius: var(--r-md);
+    font-size: var(--fs-12);
+    color: oklch(35% 0.13 265);
+  }
+  .sleep-ongoing svg { color: oklch(50% 0.13 265); }
+  .sleep-ongoing .pulse {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: oklch(60% 0.18 265);
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.4; transform: scale(0.9); }
+    50% { opacity: 1; transform: scale(1.1); }
+  }
+
   .pane { display: none; }
   .pane.active { display: flex; flex-direction: column; gap: var(--s-4); }
 
@@ -317,6 +398,11 @@
 
     <!-- 수유 -->
     <div class="pane tone-feed active" data-pane="feed">
+      <div class="smart-banner">
+        <svg class="icon-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        <div>직전 기록을 자동으로 채워뒀어요. <strong>변경 없으면 1탭 저장</strong>.</div>
+      </div>
+
       <div>
         <div class="form-label">종류</div>
         <div class="quick-row">
@@ -358,8 +444,15 @@
       </div>
 
       <div>
-        <div class="form-label">양 조정</div>
-        <div class="amount-row">
+        <div class="form-label">양 — 자주 쓰는 값</div>
+        <div class="amount-chips tone-feed">
+          <button data-amt="60">60</button>
+          <button data-amt="90">90</button>
+          <button class="active" data-amt="120">120</button>
+          <button data-amt="150">150</button>
+          <button data-amt="180">180</button>
+        </div>
+        <div class="amount-row" style="margin-top: var(--s-2);">
           <button class="amount-step" id="amt-down" aria-label="10ml 감소">−10</button>
           <div class="amount-input">
             <input type="number" value="120" id="amt-input"/>
@@ -387,12 +480,17 @@
 
     <!-- 수면 -->
     <div class="pane tone-sleep" data-pane="sleep">
+      <div class="smart-banner">
+        <svg class="icon-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        <div><strong>깬 시각만 입력하세요.</strong> 잠든 시각은 패턴으로 추정해드려요.</div>
+      </div>
+
       <div class="sleep-grid">
         <div class="time-display tone-sleep">
           <div class="time-cell">
-            <div class="lbl">잠든 시각</div>
+            <div class="lbl">잠든 시각 <span style="color: oklch(60% 0.013 265); font-weight: 500;">(추정)</span></div>
             <div class="val num">12:35</div>
-            <div class="sub">약 1시간 30분 전</div>
+            <div class="sub">약 1시간 30분 전 · 패턴 추정</div>
           </div>
           <div class="time-cell right">
             <div class="lbl">깬 시각</div>
@@ -404,6 +502,12 @@
           <button class="active">방금 깼어요</button>
           <button>아직 자는 중</button>
           <button>직접 입력</button>
+        </div>
+
+        <div class="sleep-ongoing" id="sleep-ongoing" style="display:none;">
+          <span class="pulse" aria-hidden="true"></span>
+          <svg class="icon-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <div><strong>아직 자는 중</strong> · 깰 때 음성 "방금 깼어"로 한 번에 마감</div>
         </div>
       </div>
 
@@ -433,6 +537,11 @@
           <div class="repeat-card__s">잠든 시각이 비어있어도 됩니다 — 추정으로 채워줘요</div>
         </div>
       </a>
+
+      <div class="voice-tip">
+        <svg class="icon-20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+        <div><strong>"아기 12시 반에 잠들어서 2시에 깼어"</strong> 음성 한 마디로 끝</div>
+      </div>
     </div>
 
     <!-- 배변 -->
@@ -452,7 +561,10 @@
           <button class="tone-diaper selected"><span class="color-swatch" style="background: oklch(80% 0.15 90);"></span>노랑</button>
           <button class="tone-diaper"><span class="color-swatch" style="background: oklch(60% 0.13 130);"></span>녹색</button>
           <button class="tone-diaper"><span class="color-swatch" style="background: oklch(45% 0.06 40);"></span>갈색</button>
-          <button class="tone-diaper"><span class="color-swatch" style="background: oklch(25% 0.05 40);"></span>검정</button>
+          <button class="tone-diaper emergency"><span class="color-swatch" style="background: oklch(25% 0.05 40);"></span>검정<span class="emergency-label">상담권장</span></button>
+          <button class="tone-diaper emergency"><span class="color-swatch" style="background: oklch(60% 0.20 25);"></span>빨강<span class="emergency-label">상담권장</span></button>
+          <button class="tone-diaper emergency"><span class="color-swatch" style="background: oklch(96% 0.005 240); border: 1px solid var(--border);"></span>흰색<span class="emergency-label">상담권장</span></button>
+          <button class="tone-diaper"><span class="color-swatch" style="background: oklch(70% 0.10 60);"></span>기타</button>
         </div>
       </div>
 
@@ -472,7 +584,7 @@
           <div class="time-cell">
             <div class="lbl">시각</div>
             <div class="val num">14:23</div>
-            <div class="sub">5월 18일 일 · 방금</div>
+            <div class="sub">5월 21일 목 · 방금</div>
           </div>
           <div class="time-cell right">
             <div class="lbl">발진 여부</div>
@@ -485,6 +597,18 @@
             </div>
           </div>
         </div>
+        <div class="time-quick">
+          <button class="active">방금</button>
+          <button>10분 전</button>
+          <button>30분 전</button>
+          <button>1시간 전</button>
+          <button>직접 입력…</button>
+        </div>
+      </div>
+
+      <div class="voice-tip">
+        <svg class="icon-20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+        <div><strong>"기저귀 갈았어, 응가"</strong> 음성으로도 한 마디에 기록</div>
       </div>
     </div>
 
@@ -509,13 +633,34 @@
 
   // amount stepper
   const amt = document.getElementById('amt-input');
-  document.getElementById('amt-up').addEventListener('click', () => { amt.value = (+amt.value || 0) + 10; syncFeed(); });
-  document.getElementById('amt-down').addEventListener('click', () => { amt.value = Math.max(0, (+amt.value || 0) - 10); syncFeed(); });
-  amt.addEventListener('input', syncFeed);
+  document.getElementById('amt-up').addEventListener('click', () => { amt.value = (+amt.value || 0) + 10; syncFeed(); updateAmountChips(); });
+  document.getElementById('amt-down').addEventListener('click', () => { amt.value = Math.max(0, (+amt.value || 0) - 10); syncFeed(); updateAmountChips(); });
+  amt.addEventListener('input', () => { syncFeed(); updateAmountChips(); });
   function syncFeed() {
     const el = document.getElementById('feed-amt');
     if (el) el.textContent = amt.value || 0;
   }
+
+  // 자주 쓰는 양 칩 (60·90·120·150·180) — 1탭으로 양 변경
+  const amountChips = document.querySelectorAll('.amount-chips button');
+  amountChips.forEach(b => b.addEventListener('click', () => {
+    amountChips.forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    amt.value = b.dataset.amt;
+    syncFeed();
+  }));
+  function updateAmountChips() {
+    amountChips.forEach(x => x.classList.toggle('active', x.dataset.amt === amt.value));
+  }
+
+  // 수면 — "아직 자는 중" 칩 클릭 시 진행 중 상태 표시
+  const sleepOngoing = document.getElementById('sleep-ongoing');
+  const sleepQuickButtons = document.querySelectorAll('.pane[data-pane="sleep"] .time-quick button');
+  sleepQuickButtons.forEach(b => b.addEventListener('click', () => {
+    if (sleepOngoing) {
+      sleepOngoing.style.display = (b.textContent.trim() === '아직 자는 중') ? 'flex' : 'none';
+    }
+  }));
 
   // quick selection within a group — supports plain buttons + feed-split cell
   document.querySelectorAll('.quick-row').forEach(grp => {
